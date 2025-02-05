@@ -67,8 +67,8 @@ function Navbar() {
           </IconButton>
         </Box>
       </Box>
+      {/* Sidebar2 */}
 
-      {/* Sidebar Items */}
       <Box
         sx={{
           padding: "0 16px",
@@ -77,48 +77,50 @@ function Navbar() {
         }}
       >
         <List>
-          <ListItemButton
-            sx={{
-              backgroundColor: "#1976d2",
-              margin: "16px 0",
-              "&:hover": { backgroundColor: "#1565c0" },
-              borderRadius: "5px",
-            }}
-          >
-            <ListItemIcon>
-              <MdSpaceDashboard style={{ height: "24px", width: "24px" }} />
-            </ListItemIcon>
-            <NavLink to="/admin">
-              <ListItemText primary="Dashboard" />
-            </NavLink>
-          </ListItemButton>
-
-          <ListItemButton sx={{ margin: "16px 0", borderRadius: "5px" }}>
-            <ListItemIcon>
-              <CategoryIcon />
-            </ListItemIcon>
-            <NavLink to="/category">
-              <ListItemText primary="Category" />
-            </NavLink>
-          </ListItemButton>
-
-          <ListItemButton sx={{ margin: "16px 0", borderRadius: "5px" }}>
-            <ListItemIcon>
-              <AddCircleOutlineIcon />
-            </ListItemIcon>
-            <NavLink to="/subcat">
-              <ListItemText primary="Sub Category" />
-            </NavLink>
-          </ListItemButton>
-
-          <ListItemButton sx={{ margin: "16px 0", borderRadius: "5px" }}>
-            <ListItemIcon>
-              <HelpOutlineIcon />
-            </ListItemIcon>
-            <NavLink to="/qa">
-              <ListItemText primary="Q & A" />
-            </NavLink>
-          </ListItemButton>
+          {[
+            {
+              text: "Dashboard",
+              icon: (
+                <MdSpaceDashboard style={{ height: "24px", width: "24px" }} />
+              ),
+              link: "/admin",
+            },
+            {
+              text: "Category",
+              icon: <CategoryIcon style={{ height: "24px", width: "24px" }} />,
+              link: "/category",
+            },
+            {
+              text: "Sub Category",
+              icon: (
+                <AddCircleOutlineIcon
+                  style={{ height: "24px", width: "24px" }}
+                />
+              ),
+              link: "/subcat",
+            },
+            {
+              text: "Q & A",
+              icon: (
+                <HelpOutlineIcon style={{ height: "24px", width: "24px" }} />
+              ),
+              link: "/qa",
+            },
+          ].map(({ text, icon, link }) => (
+            <ListItemButton
+              key={text}
+              sx={{
+                borderRadius: 1,
+                "&.active": { backgroundColor: "#1976D2", color: "white" },
+                margin: "16px 0",
+              }}
+              component={NavLink}
+              to={link}
+            >
+              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          ))}
         </List>
       </Box>
     </Box>
