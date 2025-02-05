@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import toast, { Toaster } from "react-hot-toast";
+import { NavLink } from "react-router";
 
 function Login() {
   const formik = useFormik({
@@ -10,7 +11,7 @@ function Login() {
       password: "",
     },
     onSubmit: (values, { resetForm }) => {
-      alert(JSON.stringify(values, null, 2));
+      console.log(JSON.stringify(values, null, 2));
       resetForm();
       toast.success("Login Successfully !!");
     },
@@ -69,13 +70,23 @@ function Login() {
                   label="Password"
                   sx={{ width: "100%", marginBottom: "20px" }}
                 ></TextField>
+
                 <Button
                   fullWidth
                   color="primary"
                   type="submit"
                   variant="contained"
                 >
-                  Submit
+                  <NavLink
+                    to="/admin"
+                    style={{
+                      width: "100%",
+                      color: "white",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Submit
+                  </NavLink>
                 </Button>
               </form>
             </Box>
