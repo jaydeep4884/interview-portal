@@ -78,34 +78,14 @@ function Navbar() {
       >
         <List>
           {[
-            {
-              text: "Dashboard",
-              icon: (
-                <MdSpaceDashboard style={{ height: "24px", width: "24px" }} />
-              ),
-              link: "/admin",
-            },
-            {
-              text: "Category",
-              icon: <CategoryIcon style={{ height: "24px", width: "24px" }} />,
-              link: "/category",
-            },
+            { text: "Dashboard", icon: <MdSpaceDashboard />, link: "/admin" },
+            { text: "Category", icon: <CategoryIcon />, link: "/category" },
             {
               text: "Sub Category",
-              icon: (
-                <AddCircleOutlineIcon
-                  style={{ height: "24px", width: "24px" }}
-                />
-              ),
+              icon: <AddCircleOutlineIcon />,
               link: "/subcat",
             },
-            {
-              text: "Q & A",
-              icon: (
-                <HelpOutlineIcon style={{ height: "24px", width: "24px" }} />
-              ),
-              link: "/qa",
-            },
+            { text: "Q & A", icon: <HelpOutlineIcon />, link: "/qa" },
           ].map(({ text, icon, link }) => (
             <ListItemButton
               key={text}
@@ -116,8 +96,18 @@ function Navbar() {
               }}
               component={NavLink}
               to={link}
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? "#1976D2" : "transparent",
+                color: isActive ? "white" : "black",
+              })}
             >
-              <ListItemIcon>{icon}</ListItemIcon>
+              <ListItemIcon
+                sx={{
+                  color: "inherit",
+                }}
+              >
+                {icon}
+              </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
           ))}

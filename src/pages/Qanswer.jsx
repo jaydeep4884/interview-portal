@@ -1,10 +1,15 @@
+import { Box } from "@mui/material";
 import React from "react";
+import Navbar from "../components/Navbar";
 
 const Qanswer = () => {
   return (
-    <div>
-      <h1>Question Answer Page</h1>
-    </div>
+    <>
+      <Box>
+        <Navbar />
+        <h1>Question Answer Page</h1>
+      </Box>
+    </>
   );
 };
 
