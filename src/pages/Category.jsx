@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Box,
   Button,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
   MenuItem,
+  Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -13,31 +20,39 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import { useFormik } from "formik";
+import toast, { Toaster } from "react-hot-toast";
 
-const currencies = [
-  {
-    value: "Backend",
-    label: "Backend",
-  },
-  {
-    value: "Front-End",
-    label: "Front-End",
-  },
-  {
-    value: "Devops",
-    label: "Devops",
-  },
+const categories = [
+  { id: 1, name: "Backend", status: <Switch defaultChecked /> },
+  { id: 2, name: "Front-End", status: <Switch defaultChecked /> },
 ];
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("1", "Backend", 6.0, 24, 4.0),
-  createData("2", "Fronted", 9.0, 37, 4.3),
-];
 function Category() {
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      category: "",
+    },
+    onSubmit: (values, { resetForm }) => {
+      resetForm();
+      handleClose();
+      toast.success("Category Add Successfully !!");
+      console.log("Form Submit !!", values);
+    },
+  });
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -60,21 +75,54 @@ function Category() {
                 marginBottom: "20px",
               }}
             >
-              <TextField
-                fullWidth
-                id="fullWidth"
-                component="form"
-                select
-                label="Search Category"
-              >
-                {currencies.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+              <TextField fullWidth select label="Search Category">
+                {categories.map((option) => (
+                  <MenuItem key={option.id} value={option.name}>
+                    {option.name}
                   </MenuItem>
                 ))}
               </TextField>
 
-              <Button variant="contained">Add Category</Button>
+              <Button variant="contained" onClick={handleClickOpen}>
+                Add Category
+              </Button>
+
+              <Dialog open={open}>
+                <form onSubmit={formik.handleSubmit}>
+                  <DialogTitle>Add Category</DialogTitle>
+
+                  <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={(theme) => ({
+                      position: "absolute",
+                      right: 8,
+                      top: 8,
+                      color: theme.palette.grey[500],
+                    })}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+
+                  <DialogContent dividers={Paper}>
+                    <TextField
+                      id="category"
+                      name="category"
+                      label="Category"
+                      onChange={formik.handleChange}
+                      value={formik.values.category}
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button type="submit" variant="contained">
+                      Submit
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Dialog>
             </Box>
 
             <TableContainer
@@ -85,40 +133,39 @@ function Category() {
               }}
             >
               <Table aria-label="simple table">
-                <TableHead
-                  sx={{
-                    backgroundColor: "rgb(25, 118, 210)",
-                  }}
-                >
+                <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
                   <TableRow>
                     <TableCell sx={{ color: "white" }}>No</TableCell>
-                    <TableCell sx={{ color: "white" }} align="right">
-                      Category Name
-                    </TableCell>
-                    <TableCell sx={{ color: "white" }} align="right">
+                    <TableCell sx={{ color: "white" }}>Category Name</TableCell>
+                    <TableCell sx={{ color: "white", textAlign: "end" }}>
                       Status
                     </TableCell>
-                    <TableCell sx={{ color: "white" }} align="right">
+                    <TableCell sx={{ color: "white", textAlign: "end" }}>
                       Delete
                     </TableCell>
-                    <TableCell sx={{ color: "white" }} align="right">
+                    <TableCell sx={{ color: "white", textAlign: "end" }}>
                       Update
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {row.name}
+                  {categories.map((category) => (
+                    <TableRow key={category.id}>
+                      <TableCell>{category.id}</TableCell>
+                      <TableCell>{category.name}</TableCell>
+                      <TableCell sx={{ textAlign: "end" }}>
+                        {category.status}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell sx={{ textAlign: "end" }}>
+                        <IconButton aria-label="delete">
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell sx={{ textAlign: "end" }}>
+                        <IconButton aria-label="delete">
+                          <EditIcon />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -126,6 +173,7 @@ function Category() {
             </TableContainer>
           </Container>
         </Box>
+        <Toaster />
       </Box>
     </>
   );
