@@ -94,7 +94,7 @@ function SubCat() {
                       sx={{ marginBottom: "16px" }}
                       id="category"
                       name="category"
-                      label="Category"
+                      label="Sub Category"
                       onChange={formik.handleChange}
                       value={formik.values.category}
                       type="text"
