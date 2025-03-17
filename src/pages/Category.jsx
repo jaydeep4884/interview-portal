@@ -18,7 +18,6 @@ import {
   TableHead,
   TableRow,
   Switch,
-  MenuItem,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
@@ -27,9 +26,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 function Category() {
-  let [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(-1);
+  const [search, setSearch] = useState("");
+  const [searchData, setSearchData] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,6 +58,7 @@ function Category() {
         localStorage.setItem("data", JSON.stringify(dataCopy));
         handleClose();
         resetForm();
+        setSearch("");
         FetchData();
       }
     },
@@ -80,12 +81,26 @@ function Category() {
 
   const FetchData = () => {
     let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
-    setData(dataCopy);
+    searchingData(dataCopy);
+  };
+
+  const searchingData = () => {
+    let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
+    let searchValue = search.toLowerCase();
+    setSearchData(
+      dataCopy.filter((el) => el.category.toLowerCase().includes(searchValue))
+    );
   };
 
   useEffect(() => {
     FetchData();
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    searchingData();
+    // eslint-disable-next-line
+  }, [search]);
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -108,13 +123,12 @@ function Category() {
                 marginBottom: "20px",
               }}
             >
-              <TextField fullWidth label="Search Category">
-                {data.map((el, i) => (
-                  <MenuItem key={i} value={el.category}>
-                    {el.category}
-                  </MenuItem>
-                ))}
-              </TextField>
+              <TextField
+                fullWidth
+                label="Search Category"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
               <Button variant="contained" onClick={handleClickOpen}>
                 Add Category
@@ -182,7 +196,7 @@ function Category() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data.map((el, index) => (
+                  {searchData.map((el, index) => (
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{el.category}</TableCell>
