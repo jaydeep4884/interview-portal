@@ -83,10 +83,14 @@ function Admin() {
                   Title="Total Categorie"
                   Count={categoryData}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
                 <TotalCategoryCount
                   Title="Total Sub-Categorie"
                   Count={subCategoryData}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
                 <TotalCategoryCount
                   Title="Total Quations"
                   Count={questionData}
@@ -94,6 +98,7 @@ function Admin() {
               </Grid>
             </Grid>
           </Container>
+          
         </Box>
       </Box>
     </>
