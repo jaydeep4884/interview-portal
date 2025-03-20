@@ -20,7 +20,7 @@ import {
   Switch,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useFormik } from "formik";
+
 import toast, { Toaster } from "react-hot-toast";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,47 +43,31 @@ function Category() {
     setOpen(true);
   };
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log(values);
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await axios
+        .post(
+          "https://interviewback-ucb4.onrender.com/category/create",
+          values,
+          {
+            headers: {
+              Authorization: Token,
+            },
+          }
+        )
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
     resetForm();
     handleClose();
-    setSearch("");
     FetchData();
-    toast.success("Category Add Successfully !!");
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     category: "",
-  //   },
-  //   onSubmit: async (values, { resetForm }) => {
-  //     if (formik.values.category !== "") {
-  //       try {
-  //         await axios
-  //           .post(
-  //             "https://interviewback-ucb4.onrender.com/category/create",
-  //             values,
-  //             {
-  //               headers: {
-  //                 Authorization: Token,
-  //               },
-  //             }
-  //           )
-  //           .then((res) => {
-  //             console.log(res.data);
-  //           })
-  //           .catch((err) => console.log(err));
-  //         console.log(values);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //   },
-  // });
 
   const deleteData = (index) => {
     let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
@@ -95,8 +79,6 @@ function Category() {
 
   const updateData = (index) => {
     setOpen(true);
-    let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
-    // formik.setValues(dataCopy[index]);
     setId(index);
   };
 
@@ -147,27 +129,31 @@ function Category() {
           }}
         >
           <Container maxWidth="lg">
-            <Formik
-              enableReinitialize
-              initialValues={ini}
-              onSubmit={handleSubmit}
+            <Box
+              sx={{
+                display: "flex",
+                width: "100%",
+                alignItems: "center",
+                columnGap: "16px",
+                marginBottom: "20px",
+              }}
             >
-              <Form>
-                <Box
-                  sx={{
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    columnGap: "16px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <Field as={TextField} fullWidth label="Search Category" />
+              <TextField
+                fullWidth
+                label="Search Category"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
-                  <Button variant="contained" onClick={handleClickOpen}>
-                    Add Category
-                  </Button>
-
+              <Button variant="contained" onClick={handleClickOpen}>
+                Add Category
+              </Button>
+              <Formik
+                enableReinitialize
+                initialValues={ini}
+                onSubmit={handleSubmit}
+              >
+                <Form>
                   <Dialog open={open}>
                     <DialogTitle>Add Category</DialogTitle>
 
@@ -200,9 +186,9 @@ function Category() {
                       </Field>
                     </DialogActions>
                   </Dialog>
-                </Box>
-              </Form>
-            </Formik>
+                </Form>
+              </Formik>
+            </Box>
 
             <TableContainer
               sx={{
