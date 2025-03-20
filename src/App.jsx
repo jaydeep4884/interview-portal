@@ -5,6 +5,7 @@ import Qanswer from "./pages/Qanswer";
 import SubCat from "./pages/SubCat";
 import Admin from "./pages/admin";
 import { Routes, Route } from "react-router";
+// import AdminPanel from "./pages/AdminPanel";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="qa" element={<Qanswer />} />
         </Route>
       </Routes>
+      {/* <AdminPanel /> */}
     </>
   );
 }

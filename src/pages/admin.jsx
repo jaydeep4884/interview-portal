@@ -21,6 +21,7 @@ function Admin() {
         })
         .then((res) => {
           setCategoryData(res.data.data);
+          // console.log(res.data);
         });
     } catch (error) {
       console.log(error);
@@ -66,7 +67,7 @@ function Admin() {
   }, []);
   return (
     <>
-      <Box sx={{ position: "relative" }}>
+      <Box>
         <Navbar />
         <Box
           sx={{
@@ -91,14 +92,10 @@ function Admin() {
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
-                <TotalCategoryCount
-                  Title="Total Quations"
-                  Count={questionData}
-                />
+                <TotalCategoryCount Title="Total Q /A" Count={questionData} />
               </Grid>
             </Grid>
           </Container>
-          
         </Box>
       </Box>
     </>
