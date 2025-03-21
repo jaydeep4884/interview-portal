@@ -18,15 +18,33 @@ import {
   TableHead,
   TableRow,
   Switch,
+  MenuItem,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
 import toast, { Toaster } from "react-hot-toast";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { Form, Field, Formik } from "formik";
 
+const currencies = [
+  {
+    value: "USD",
+    label: "$",
+  },
+  {
+    value: "EUR",
+    label: "€",
+  },
+  {
+    value: "BTC",
+    label: "฿",
+  },
+  {
+    value: "JPY",
+    label: "¥",
+  },
+];
 function Category() {
   const [ini, setIni] = useState({
     categoryName: "",
@@ -182,11 +200,18 @@ function Category() {
               }}
             >
               <TextField
+                select
                 fullWidth
                 label="Search Category"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-              />
+              >
+                {data.map((el, i) => (
+                  <MenuItem key={i} value={el.categoryName}>
+                    {el.categoryName}
+                  </MenuItem>
+                ))}
+              </TextField>
 
               <Button variant="contained" onClick={handleClickOpen}>
                 Add Category
