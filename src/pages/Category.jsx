@@ -29,7 +29,7 @@ import { Form, Field, Formik } from "formik";
 
 function Category() {
   const [ini, setIni] = useState({
-    category: "",
+    categoryName: "",
   });
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
@@ -44,42 +44,83 @@ function Category() {
   };
 
   const handleSubmit = async (values, { resetForm }) => {
-    try {
-      await axios
-        .post(
-          "https://interviewback-ucb4.onrender.com/category/create",
-          values,
-          {
-            headers: {
-              Authorization: Token,
-            },
-          }
-        )
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
-    } catch (error) {
-      console.log(error);
+    if (id !== null) {
+      try {
+        await axios
+          .patch(
+            `https://interviewback-ucb4.onrender.com/category/${id}`,
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log("Data Updated !!");
+            console.log(res.data);
+            setIni({
+              category: "",
+            });
+            setId(null);
+            FetchData();
+            toast.success("Data Updated !!");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await axios
+          .post(
+            "https://interviewback-ucb4.onrender.com/category/create",
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            toast.success("Data Created Successfully.. !!");
+            resetForm();
+            FetchData();
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        toast.error("Something Went Wrong !");
+      }
     }
-    resetForm();
+    // console.log(values);
+
     handleClose();
-    FetchData();
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const deleteData = (index) => {
-    let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
-    dataCopy.splice(index, 1);
-    localStorage.setItem("data", JSON.stringify(dataCopy));
-    FetchData();
-    toast.success("Category Delete Successfully !!");
+  const deleteData = async (id) => {
+    try {
+      await axios
+        .delete(`https://interviewback-ucb4.onrender.com/category/${id}`, {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then(() => {
+          toast.success("Category Delete Successfully !!");
+          FetchData();
+        });
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
-  const updateData = (index) => {
+  const updateData = (id) => {
     setOpen(true);
-    setId(index);
+    setId(id);
   };
 
   const FetchData = async () => {
@@ -91,7 +132,6 @@ function Category() {
           },
         })
         .then((res) => {
-          console.log(res.data);
           setData(res.data.data);
         })
         .catch((err) => console.log(err));
@@ -148,46 +188,46 @@ function Category() {
               <Button variant="contained" onClick={handleClickOpen}>
                 Add Category
               </Button>
-              <Formik
-                enableReinitialize
-                initialValues={ini}
-                onSubmit={handleSubmit}
-              >
-                <Form>
-                  <Dialog open={open}>
-                    <DialogTitle>Add Category</DialogTitle>
 
-                    <IconButton
-                      aria-label="close"
-                      onClick={handleClose}
-                      sx={(theme) => ({
-                        position: "absolute",
-                        right: 8,
-                        top: 8,
-                        color: theme.palette.grey[500],
-                      })}
-                    >
-                      <CloseIcon />
-                    </IconButton>
+              <Dialog open={open}>
+                <DialogTitle>Add Category</DialogTitle>
 
+                <IconButton
+                  aria-label="close"
+                  onClick={handleClose}
+                  sx={(theme) => ({
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: theme.palette.grey[500],
+                  })}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Formik
+                  enableReinitialize
+                  initialValues={ini}
+                  onSubmit={handleSubmit}
+                >
+                  <Form>
                     <DialogContent dividers={Paper}>
                       <Field
                         as={TextField}
-                        name="category"
+                        name="categoryName"
                         label="Category"
                         type="text"
                         fullWidth
                         variant="outlined"
                       />
+                      <DialogActions>
+                        <Field as={Button} type="submit" variant="contained">
+                          Submit
+                        </Field>
+                      </DialogActions>
                     </DialogContent>
-                    <DialogActions>
-                      <Field as={Button} type="submit" variant="contained">
-                        Submit
-                      </Field>
-                    </DialogActions>
-                  </Dialog>
-                </Form>
-              </Formik>
+                  </Form>
+                </Formik>
+              </Dialog>
             </Box>
 
             <TableContainer
@@ -219,12 +259,15 @@ function Category() {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{el.categoryName}</TableCell>
                       <TableCell sx={{ textAlign: "end" }}>
-                        <Switch />
+                        <Switch
+                          checked={el.status === "on" ? true : false}
+                          color="secondary"
+                        />
                       </TableCell>
                       <TableCell sx={{ textAlign: "end" }}>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => deleteData(index)}
+                          onClick={() => deleteData(el._id)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -232,7 +275,7 @@ function Category() {
                       <TableCell sx={{ textAlign: "end" }}>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => updateData(index)}
+                          onClick={() => updateData(el._id)}
                         >
                           <EditIcon />
                         </IconButton>
