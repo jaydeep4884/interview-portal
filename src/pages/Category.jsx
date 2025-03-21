@@ -27,24 +27,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { Form, Field, Formik } from "formik";
 
-const currencies = [
-  {
-    value: "USD",
-    label: "$",
-  },
-  {
-    value: "EUR",
-    label: "€",
-  },
-  {
-    value: "BTC",
-    label: "฿",
-  },
-  {
-    value: "JPY",
-    label: "¥",
-  },
-];
 function Category() {
   const [ini, setIni] = useState({
     categoryName: "",
@@ -53,7 +35,7 @@ function Category() {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(-1);
   const [search, setSearch] = useState("");
-  const [searchData, setSearchData] = useState([]);
+  // const [searchData, setSearchData] = useState([]);
   const Token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
 
@@ -110,8 +92,6 @@ function Category() {
         toast.error("Something Went Wrong !");
       }
     }
-    // console.log(values);
-
     handleClose();
   };
 
@@ -161,12 +141,23 @@ function Category() {
     }
   };
 
-  const searchingData = () => {
-    let dataCopy = JSON.parse(localStorage.getItem("data")) || [];
-    let searchValue = search.toLowerCase();
-    setSearchData(
-      dataCopy.filter((el) => el.category.toLowerCase().includes(searchValue))
-    );
+  const searchingData = async () => {
+    await axios
+      .get("https://interviewback-ucb4.onrender.com/category/?search=prog", {
+        headers: {
+          Authorization: Token,
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.data === "" ? [] : response.data.data);
+        // let searchValue = search.toLowerCase();
+        // setSearchData(
+        //   data.filter((el) =>
+        //     el.categoryName.toLowerCase().includes(searchValue)
+        //   )
+        // );
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -204,7 +195,7 @@ function Category() {
                 fullWidth
                 label="Search Category"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onSelect={(e) => setSearch(e.target.value)}
               >
                 {data.map((el, i) => (
                   <MenuItem key={i} value={el.categoryName}>
