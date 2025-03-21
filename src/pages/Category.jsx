@@ -58,13 +58,13 @@ function Category() {
           )
           .then((res) => {
             console.log("Data Updated !!");
-            console.log(res.data);
             setIni({
               category: "",
             });
             setId(null);
             FetchData();
             toast.success("Data Updated !!");
+            resetForm();
           });
       } catch (error) {
         console.log(error);
@@ -118,9 +118,12 @@ function Category() {
     }
   };
 
-  const updateData = (id) => {
+  const updateData = (el) => {
     setOpen(true);
-    setId(id);
+    setIni({
+      categoryName: el.categoryName,
+    });
+    setId(el._id);
   };
 
   const FetchData = async () => {
@@ -275,7 +278,7 @@ function Category() {
                       <TableCell sx={{ textAlign: "end" }}>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => updateData(el._id)}
+                          onClick={() => updateData(el)}
                         >
                           <EditIcon />
                         </IconButton>
