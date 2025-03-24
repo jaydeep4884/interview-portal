@@ -3,40 +3,27 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Form, Field, Formik } from "formik";
 import * as Yup from "yup";
 
-const validate = (values) => {
-  const error = {};
-  if (!values.firstName) {
-    error.firstName = "Required";
-  } else if (values.firstName.length > 15) {
-    error.firstName = "Must be 15 characters or less";
-  }
+const SignUpSchema = Yup.object().shape({
+  firstname: Yup.string()
+    .min(2, "Too Short FirstName")
+    .max(50, "Too Large FirstName")
+    .required("Required"),
 
-  if (!values.lastName) {
-    error.lastName = "Required";
-  } else if (values.lastName.length > 20) {
-    error.lastName = "Must be 20 characters or less";
-  }
+  lastname: Yup.string()
+    .min(2, "Too Short lastname")
+    .max(50, "Too Large lastname")
+    .required("Required"),
 
-  if (!values.contact) {
-    error.contact = "Required";
-  } else if (values.password.length >= 10) {
-    error.contact = "Must be 10 Digits";
-  }
+  contact: Yup.number().min(10, "Invalid Number").required("Required"),
 
-  if (!values.email) {
-    error.email = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    error.email = "Invalid Email Address";
-  }
+  email: Yup.string().email("Invalid email").required("Required"),
 
-  if (!values.password) {
-    error.password = "Required";
-  } else if (values.password.length > 10) {
-    error.password = "Must be 10 char or less";
-  }
+  password: Yup.string()
+    .min(2, "Too Short Password")
+    .max(20, "Too Large Password")
+    .required("Required"),
+});
 
-  return error;
-};
 function SignUp() {
   const [ini, setIni] = useState({
     firstname: "",
@@ -88,66 +75,84 @@ function SignUp() {
               <Formik
                 enableReinitialize
                 initialValues={ini}
-                validationSchema={validate}
+                validationSchema={SignUpSchema}
                 onSubmit={handleSubmit}
               >
-                <Form>
-                  <Field
-                    as={TextField}
-                    name="firstname"
-                    variant="outlined"
-                    label="Enter Firstname"
-                    sx={InputStyle}
-                    required
-                  />
+                {({ errors, touched }) => (
+                  <Form>
+                    <Field
+                      as={TextField}
+                      helperText={
+                        errors.firstname && touched.firstname ? (
+                          <label>{errors.firstname}</label>
+                        ) : null
+                      }
+                      name="firstname"
+                      variant="outlined"
+                      label="Enter Firstname"
+                      sx={InputStyle}
+                      required
+                    />
 
-                  <Field
-                    as={TextField}
-                    name="lastname"
-                    variant="outlined"
-                    label="Enter Lastname"
-                    sx={InputStyle}
-                    required
-                  />
+                    <Field
+                      as={TextField}
+                      name="lastname"
+                      variant="outlined"
+                      label="Enter Lastname"
+                      sx={InputStyle}
+                      required
+                    />
+                    {errors.lastname && touched.lastname ? (
+                      <div>{errors.lastname}</div>
+                    ) : null}
 
-                  <Field
-                    as={TextField}
-                    name="contact"
-                    type="number"
-                    variant="outlined"
-                    label="Enter Contact Number"
-                    sx={InputStyle}
-                    required
-                  />
+                    <Field
+                      as={TextField}
+                      name="contact"
+                      type="number"
+                      variant="outlined"
+                      label="Enter Contact Number"
+                      sx={InputStyle}
+                      required
+                    />
+                    {errors.contact && touched.contact ? (
+                      <div>{errors.contact}</div>
+                    ) : null}
 
-                  <Field
-                    as={TextField}
-                    name="email"
-                    type="email"
-                    variant="outlined"
-                    label="Enter Email"
-                    sx={InputStyle}
-                    required
-                  />
+                    <Field
+                      as={TextField}
+                      name="email"
+                      type="email"
+                      variant="outlined"
+                      label="Enter Email"
+                      sx={InputStyle}
+                      required
+                    />
+                    {errors.email && touched.email ? (
+                      <div>{errors.email}</div>
+                    ) : null}
 
-                  <Field
-                    as={TextField}
-                    name="password"
-                    type="password"
-                    variant="outlined"
-                    label="Enter Password"
-                    sx={InputStyle}
-                    required
-                  />
+                    <Field
+                      as={TextField}
+                      name="password"
+                      type="password"
+                      variant="outlined"
+                      label="Enter Password"
+                      sx={InputStyle}
+                      required
+                    />
+                    {errors.password && touched.password ? (
+                      <div>{errors.password}</div>
+                    ) : null}
 
-                  <Field
-                    as={Button}
-                    fullWidth
-                    color="primary"
-                    type="submit"
-                    variant="contained"
-                  >
-                    {/* <NavLink
+                    <Field
+                      as={Button}
+                      fullWidth
+                      color="primary"
+                      type="submit"
+                      variant="contained"
+                    >
+                      {/* <NavLink
                       to="/login"
                       style={{
                         width: "100%",
@@ -157,9 +162,10 @@ function SignUp() {
                     >
                       Submit
                     </NavLink> */}
-                    Submit
-                  </Field>
-                </Form>
+                      Submit
+                    </Field>
+                  </Form>
+                )}
               </Formik>
             </Box>
           </Box>
