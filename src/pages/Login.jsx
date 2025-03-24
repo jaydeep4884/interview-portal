@@ -1,41 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useFormik } from "formik";
 import toast, { Toaster } from "react-hot-toast";
-import { NavLink } from "react-router";
-
+import { Form, Field, Formik } from "formik";
+import axios from "axios";
+import { useNavigate } from "react-router";
+import Admin from "./admin";
 
 function Login() {
-  const validate = (values) => {
-    const error = {};
-    if (!values.email) {
-      error.email = "Required";
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    ) {
-      error.email = "Invalid Email Address";
-    }
-
-    if (!values.password) {
-      error.password = "Required";
-    } else if (values.password.length > 10) {
-      error.password = "Must be 10 char or less";
-    }
-
-    return error;
-  };
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validate,
-    onSubmit: (values, { resetForm }) => {
-      console.log(JSON.stringify(values, null, 2));
-      resetForm();
-      toast.success("Login Successfully !!");
-    },
+  const navigate = useNavigate();
+  const [ini, setIni] = useState({
+    email: "",
+    password: "",
   });
+  const Token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
+
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await axios
+        .post("https://interviewback-ucb4.onrender.com/admin/login", values, {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then((res) => {
+          if (res.data.status === "success") {
+            console.log(res.data);
+            navigate("/admin");
+            toast.success("Login Successfully !!");
+            // "wuxy@mailinator.com" USER_2
+            // jygy@mailinator.com USER_3
+          }
+        });
+    } catch (error) {
+      toast.error("Invalid Email and Password !!");
+      console.log(error);
+    }
+    resetForm();
+  };
   return (
     <>
       <Container maxWidth="100%">
@@ -70,52 +72,40 @@ function Login() {
               Admin Panel
             </Typography>
             <Box>
-              <form onSubmit={formik.handleSubmit}>
-                <TextField
-                  id="email"
-                  name="email"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                  variant="outlined"
-                  label="Email"
-                  sx={{ width: "100%", marginBottom: "20px" }}
-                ></TextField>
-                {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+              <Formik
+                enableReinitialize
+                initialValues={ini}
+                onSubmit={handleSubmit}
+              >
+                <Form>
+                  <Field
+                    as={TextField}
+                    name="email"
+                    variant="outlined"
+                    label="Email"
+                    sx={InputStyle}
+                  />
 
-                <TextField
-                  id="password"
-                  name="password"
-                  type="password"
-                  onChange={formik.handleChange}
-                  value={formik.values.password}
-                  variant="outlined"
-                  label="Password"
-                  sx={{ width: "100%", marginBottom: "20px" }}
-                ></TextField>
+                  <Field
+                    as={TextField}
+                    name="password"
+                    type="password"
+                    variant="outlined"
+                    label="Password"
+                    sx={InputStyle}
+                  />
 
-                {formik.errors.password ? (
-                  <div>{formik.errors.password}</div>
-                ) : null}
-
-                <Button
-                  fullWidth
-                  color="primary"
-                  type="submit"
-                  variant="contained"
-                >
-                  {/* <NavLink
-                    to="/admin"
-                    style={{
-                      width: "100%",
-                      color: "white",
-                      textDecoration: "none",
-                    }}
+                  <Field
+                    as={Button}
+                    fullWidth
+                    color="primary"
+                    type="submit"
+                    variant="contained"
                   >
                     Submit
-                  </NavLink> */}
-                  Submit
-                </Button>
-              </form>
+                  </Field>
+                </Form>
+              </Formik>
             </Box>
           </Box>
         </Box>
@@ -126,3 +116,8 @@ function Login() {
 }
 
 export default Login;
+
+const InputStyle = {
+  width: "100%",
+  marginBottom: "20px",
+};

@@ -2,27 +2,9 @@ import React, { useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Form, Field, Formik } from "formik";
 import * as Yup from "yup";
-
-const SignUpSchema = Yup.object().shape({
-  firstname: Yup.string()
-    .min(2, "Too Short FirstName")
-    .max(50, "Too Large FirstName")
-    .required("Required"),
-
-  lastname: Yup.string()
-    .min(2, "Too Short lastname")
-    .max(50, "Too Large lastname")
-    .required("Required"),
-
-  contact: Yup.number().min(10, "Invalid Number").required("Required"),
-
-  email: Yup.string().email("Invalid email").required("Required"),
-
-  password: Yup.string()
-    .min(2, "Too Short Password")
-    .max(20, "Too Large Password")
-    .required("Required"),
-});
+import axios from "axios";
+import { useNavigate } from "react-router";
+import toast, { Toaster } from "react-hot-toast";
 
 function SignUp() {
   const [ini, setIni] = useState({
@@ -32,8 +14,28 @@ function SignUp() {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const Token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await axios
+        .post("https://interviewback-ucb4.onrender.com/admin/signup", values, {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          navigate("./admin.jsx");
+          toast.success("User Created Successfully !");
+          // "wuxy@mailinator.com" USER_2
+          // jygy@mailinator.com USER_3
+        });
+    } catch (error) {
+      console.log(error);
+    }
     console.log(values);
     resetForm();
   };
@@ -75,101 +77,72 @@ function SignUp() {
               <Formik
                 enableReinitialize
                 initialValues={ini}
-                validationSchema={SignUpSchema}
                 onSubmit={handleSubmit}
               >
-                {({ errors, touched }) => (
-                  <Form>
-                    <Field
-                      as={TextField}
-                      helperText={
-                        errors.firstname && touched.firstname ? (
-                          <label>{errors.firstname}</label>
-                        ) : null
-                      }
-                      name="firstname"
-                      variant="outlined"
-                      label="Enter Firstname"
-                      sx={InputStyle}
-                      required
-                    />
+                <Form>
+                  <Field
+                    as={TextField}
+                    name="firstname"
+                    variant="outlined"
+                    label="Enter Firstname"
+                    sx={InputStyle}
+                    required
+                  />
 
-                    <Field
-                      as={TextField}
-                      name="lastname"
-                      variant="outlined"
-                      label="Enter Lastname"
-                      sx={InputStyle}
-                      required
-                    />
-                    {errors.lastname && touched.lastname ? (
-                      <div>{errors.lastname}</div>
-                    ) : null}
+                  <Field
+                    as={TextField}
+                    name="lastname"
+                    variant="outlined"
+                    label="Enter Lastname"
+                    sx={InputStyle}
+                    required
+                  />
 
-                    <Field
-                      as={TextField}
-                      name="contact"
-                      type="number"
-                      variant="outlined"
-                      label="Enter Contact Number"
-                      sx={InputStyle}
-                      required
-                    />
-                    {errors.contact && touched.contact ? (
-                      <div>{errors.contact}</div>
-                    ) : null}
+                  <Field
+                    as={TextField}
+                    name="contact"
+                    type="number"
+                    variant="outlined"
+                    label="Enter Contact Number"
+                    sx={InputStyle}
+                    required
+                  />
 
-                    <Field
-                      as={TextField}
-                      name="email"
-                      type="email"
-                      variant="outlined"
-                      label="Enter Email"
-                      sx={InputStyle}
-                      required
-                    />
-                    {errors.email && touched.email ? (
-                      <div>{errors.email}</div>
-                    ) : null}
+                  <Field
+                    as={TextField}
+                    name="email"
+                    type="email"
+                    variant="outlined"
+                    label="Enter Email"
+                    sx={InputStyle}
+                    required
+                  />
 
-                    <Field
-                      as={TextField}
-                      name="password"
-                      type="password"
-                      variant="outlined"
-                      label="Enter Password"
-                      sx={InputStyle}
-                      required
-                    />
-                    {errors.password && touched.password ? (
-                      <div>{errors.password}</div>
-                    ) : null}
+                  <Field
+                    as={TextField}
+                    name="password"
+                    type="password"
+                    variant="outlined"
+                    label="Enter Password"
+                    sx={InputStyle}
+                    required
+                  />
 
-                    <Field
-                      as={Button}
-                      fullWidth
-                      color="primary"
-                      type="submit"
-                      variant="contained"
-                    >
-                      {/* <NavLink
-                      to="/login"
-                      style={{
-                        width: "100%",
-                        color: "white",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Submit
-                    </NavLink> */}
-                      Submit
-                    </Field>
-                  </Form>
-                )}
+                  <Field
+                    as={Button}
+                    fullWidth
+                    color="primary"
+                    type="submit"
+                    variant="contained"
+                  >
+                    Submit
+                  </Field>
+                </Form>
               </Formik>
             </Box>
           </Box>
         </Box>
+        <Toaster />
       </Container>
     </>
   );
