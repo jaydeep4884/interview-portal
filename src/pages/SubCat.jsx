@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
+  accordionActionsClasses,
   Box,
   Button,
   Container,
@@ -28,23 +29,39 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
 
-const categories = [
-  { id: 1, name: "Backend", status: <Switch defaultChecked /> },
-  { id: 2, name: "Front-End", status: <Switch defaultChecked /> },
-];
 function SubCat() {
   const [open, setOpen] = useState(false);
   const [ini, setIni] = useState({
     subCategoryname: "",
-
+    categoryID: "",
   });
   const [subCatData, setSubCatData] = useState([]);
   const Token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
 
   const handleSubmit = async (values, { resetForm }) => {
+    try {
+      await axios
+        .post(
+          "https://interviewback-ucb4.onrender.com/subcategory/create",
+          values,
+          {
+            headers: {
+              Authorization: Token,
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          toast.success("Sub Category Added !!");
+        });
+    } catch (error) {
+      console.log(error);
+    }
     console.log(values);
     resetForm();
+    handleClose();
+    getSubCategory();
   };
 
   const handleClickOpen = () => {
@@ -71,6 +88,17 @@ function SubCat() {
       console.log(error);
     }
   };
+
+  const deleteSubCatData = async (id) => {
+    try {
+      await axios.delete(
+        `https://interviewback-ucb4.onrender.com//subcategory/${id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getSubCategory();
   }, []);
@@ -131,13 +159,19 @@ function SubCat() {
                         fullWidth
                         variant="outlined"
                       />
-                      <TextField fullWidth select label="Category Name">
-                        {categories.map((option) => (
-                          <MenuItem key={option.id} value={option.name}>
-                            {option.name}
+                      <Field
+                        as={TextField}
+                        fullWidth
+                        name="categoryID"
+                        select
+                        label="Category Name"
+                      >
+                        {subCatData.map((el, i) => (
+                          <MenuItem key={i} value={el.categoryID._id}>
+                            {el.categoryID.categoryName}
                           </MenuItem>
                         ))}
-                      </TextField>
+                      </Field>
                       <DialogActions>
                         <Field as={Button} type="submit" variant="contained">
                           Submit
@@ -162,17 +196,14 @@ function SubCat() {
                     <TableRow>
                       <TableCell sx={{ color: "white" }}>No</TableCell>
                       <TableCell sx={{ color: "white" }}>
+                        Sub-Category Name
+                      </TableCell>
+                      <TableCell sx={{ color: "white" }}>
                         Category Name
                       </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "end" }}>
-                        Status
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "end" }}>
-                        Delete
-                      </TableCell>
-                      <TableCell sx={{ color: "white", textAlign: "end" }}>
-                        Update
-                      </TableCell>
+                      <TableCell sx={TabelCellStyle}>Status</TableCell>
+                      <TableCell sx={TabelCellStyle}>Delete</TableCell>
+                      <TableCell sx={TabelCellStyle}>Update</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -180,6 +211,7 @@ function SubCat() {
                       <TableRow key={i}>
                         <TableCell>{i + 1}</TableCell>
                         <TableCell>{el.subCategoryname}</TableCell>
+                        <TableCell>{el.categoryID.categoryName}</TableCell>
                         <TableCell sx={{ textAlign: "end" }}>
                           <Switch
                             checked={el.status === "on" ? true : false}
@@ -187,7 +219,10 @@ function SubCat() {
                           />
                         </TableCell>
                         <TableCell sx={{ textAlign: "end" }}>
-                          <IconButton aria-label="delete">
+                          <IconButton
+                            aria-label="delete"
+                            onClick={deleteSubCatData(el._id)}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
@@ -211,3 +246,7 @@ function SubCat() {
 }
 
 export default SubCat;
+const TabelCellStyle = {
+  color: "white",
+  textAlign: "end",
+};
