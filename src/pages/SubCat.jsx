@@ -35,6 +35,7 @@ function SubCat() {
     subCategoryname: "",
     categoryID: "",
   });
+  const [id, setId] = useState(null);
   const [subCatData, setSubCatData] = useState([]);
   const Token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
@@ -91,14 +92,29 @@ function SubCat() {
 
   const deleteSubCatData = async (id) => {
     try {
-      await axios.delete(
-        `https://interviewback-ucb4.onrender.com//subcategory/${id}`
-      );
+      await axios
+        .delete(`https://interviewback-ucb4.onrender.com/subcategory/${id}`, {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then((res) => {
+          toast.success("Data Deleted !!");
+          getSubCategory();
+        });
     } catch (error) {
       console.log(error);
     }
   };
 
+  const updateSubCatData = async (el) => {
+    handleClickOpen();
+    setIni({
+      subCategoryname: el.subCategoryname,
+      categoryID: el.categoryID.categoryName,
+    });
+    setId(el._id);
+  };
   useEffect(() => {
     getSubCategory();
   }, []);
@@ -221,13 +237,16 @@ function SubCat() {
                         <TableCell sx={{ textAlign: "end" }}>
                           <IconButton
                             aria-label="delete"
-                            onClick={deleteSubCatData(el._id)}
+                            onClick={() => deleteSubCatData(el._id)}
                           >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
                         <TableCell sx={{ textAlign: "end" }}>
-                          <IconButton aria-label="delete">
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => updateSubCatData(el)}
+                          >
                             <EditIcon />
                           </IconButton>
                         </TableCell>
