@@ -4,7 +4,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import Admin from "./admin";
 
 function Login() {
   const navigate = useNavigate();
