@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
-  accordionActionsClasses,
   Box,
   Button,
   Container,
@@ -41,24 +40,48 @@ function SubCat() {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
 
   const handleSubmit = async (values, { resetForm }) => {
-    try {
-      await axios
-        .post(
-          "https://interviewback-ucb4.onrender.com/subcategory/create",
-          values,
-          {
-            headers: {
-              Authorization: Token,
-            },
-          }
-        )
-        .then((res) => {
-          console.log(res.data);
-          toast.success("Sub Category Added !!");
-        });
-    } catch (error) {
-      console.log(error);
+    if (id !== null) {
+      try {
+        await axios
+          .patch(
+            `https://interviewback-ucb4.onrender.com/subcategory/${id}`,
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            setId(null);
+
+            toast.success("Data Updated !");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await axios
+          .post(
+            "https://interviewback-ucb4.onrender.com/subcategory/create",
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            toast.success("Sub Category Added !!");
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
+
     console.log(values);
     resetForm();
     handleClose();
