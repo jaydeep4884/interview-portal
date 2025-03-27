@@ -22,7 +22,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import Searchbar from "../components/Searchbar";
 import toast, { Toaster } from "react-hot-toast";
 import CloseIcon from "@mui/icons-material/Close";
 import { Form, Field, Formik } from "formik";
@@ -30,6 +29,7 @@ import axios from "axios";
 
 function SubCat() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState();
   const [ini, setIni] = useState({
     subCategoryname: "",
     categoryID: "",
@@ -186,7 +186,19 @@ function SubCat() {
                 marginBottom: "20px",
               }}
             >
-              <Searchbar />
+              <TextField
+                select
+                fullWidth
+                label="Search Sub-Category"
+                value={search}
+                onSelect={(e) => setSearch(e.target.value)}
+              >
+                {subCatData.map((el, i) => (
+                  <MenuItem key={i} value={el._id}>
+                    {el.subCategoryname}
+                  </MenuItem>
+                ))}
+              </TextField>
               <Button variant="contained" onClick={handleClickOpen}>
                 Add Sub Category
               </Button>

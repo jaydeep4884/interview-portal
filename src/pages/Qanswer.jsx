@@ -12,25 +12,27 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Badge,
   IconButton,
   MenuItem,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import { useFormik } from "formik";
 import toast, { Toaster } from "react-hot-toast";
+import { Form, Field, Formik } from "formik";
+import axios from "axios";
 
 const categories = [
   {
     id: 1,
     question: "What is React Jsx ?",
     answer: "I don't Know !!",
-    subcat: "",
-    cat: "",
+    subcat: "Hello",
+    cat: "Hello",
   },
   {
     id: 2,
@@ -43,6 +45,37 @@ const categories = [
 
 const Qanswer = () => {
   const [open, setOpen] = useState(false);
+  const [ini, setIni] = useState({
+    questions: "",
+    answer: "",
+    subcategoryID: "",
+  });
+  const [qaData, setQaData] = useState([]);
+  const Token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
+
+  const handleSubmit = async (values, { resetForm }) => {
+    console.log(values);
+    handleClose();
+    resetForm();
+  };
+
+  const getQaData = async () => {
+    try {
+      await axios
+        .get("https://interviewback-ucb4.onrender.com/questions/", {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.data);
+          setQaData(res.data.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,20 +85,21 @@ const Qanswer = () => {
     setOpen(false);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      question: "",
-      answer: "",
-      subCategory: "",
-    },
-    onSubmit: (values, { resetForm }) => {
-      resetForm();
-      handleClose();
-      toast.success("Sub Category Added Successfully!");
-      console.log("Form Submit:", values);
-    },
-  });
+  const deleteData = () => {
+    console.log("====================================");
+    console.log();
+    console.log("====================================");
+  };
 
+  const updateData = () => {
+    console.log("====================================");
+    console.log();
+    console.log("====================================");
+  };
+
+  useEffect(() => {
+    getQaData();
+  }, []);
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -87,69 +121,69 @@ const Qanswer = () => {
 
             {/* Dialog Component */}
             <Dialog open={open} onClose={handleClose}>
-              <form onSubmit={formik.handleSubmit}>
-                <DialogTitle>Add Q & A</DialogTitle>
+              <DialogTitle>Add Q & A</DialogTitle>
+              <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={(theme) => ({
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: theme.palette.grey[500],
+                })}
+              >
+                <CloseIcon />
+              </IconButton>
 
-                <IconButton
-                  aria-label="close"
-                  onClick={handleClose}
-                  sx={(theme) => ({
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: theme.palette.grey[500],
-                  })}
-                >
-                  <CloseIcon />
-                </IconButton>
+              <Formik
+                enableReinitialize
+                initialValues={ini}
+                onSubmit={handleSubmit}
+              >
+                <Form>
+                  <DialogContent dividers>
+                    <Field
+                      as={TextField}
+                      sx={{ marginBottom: "16px" }}
+                      name="questions"
+                      label="Question"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                    />
 
-                <DialogContent dividers>
-                  <TextField
-                    sx={{ marginBottom: "16px" }}
-                    id="question"
-                    name="question"
-                    label="Question"
-                    onChange={formik.handleChange}
-                    value={formik.values.question}
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                  />
+                    <Field
+                      as={TextField}
+                      sx={{ marginBottom: "16px" }}
+                      name="answer"
+                      label="Answer"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                    />
 
-                  <TextField
-                    sx={{ marginBottom: "16px" }}
-                    id="answer"
-                    name="answer"
-                    label="Answer"
-                    onChange={formik.handleChange}
-                    value={formik.values.answer}
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                  />
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      select
+                      label="Sub-Category Name"
+                      name="subcategoryID"
+                    >
+                      {categories.map((option) => (
+                        <MenuItem key={option.id} value={option.subcat}>
+                          {option.subcat || "No Sub-Category"}
+                        </MenuItem>
+                      ))}
+                    </Field>
 
-                  <TextField
-                    fullWidth
-                    select
-                    label="Sub-Category Name"
-                    name="subCategory"
-                    value={formik.values.subCategory}
-                    onChange={formik.handleChange}
-                  >
-                    {categories.map((option) => (
-                      <MenuItem key={option.id} value={option.subcat}>
-                        {option.subcat || "No Sub-Category"}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </DialogContent>
-
-                <DialogActions>
-                  <Button type="submit" variant="contained">
-                    Submit
-                  </Button>
-                </DialogActions>
-              </form>
+                    <DialogActions>
+                      <Field as={Button} type="submit" variant="contained">
+                        Submit
+                      </Field>
+                    </DialogActions>
+                  </DialogContent>
+                </Form>
+              </Formik>
             </Dialog>
 
             {/* Table Section */}
@@ -163,46 +197,44 @@ const Qanswer = () => {
               <Table aria-label="simple table">
                 <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
                   <TableRow>
-                    <TableCell sx={{ color: "white" }}>No</TableCell>
-                    <TableCell sx={{ color: "white" }}>Question</TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "end" }}>
-                      Answer
-                    </TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "end" }}>
-                      Sub Category
-                    </TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "end" }}>
-                      Category
-                    </TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "end" }}>
-                      Delete
-                    </TableCell>
-                    <TableCell sx={{ color: "white", textAlign: "end" }}>
-                      Update
-                    </TableCell>
+                    <TableCell sx={TableCellStyle}>No</TableCell>
+                    <TableCell sx={TableCellStyle}>Question</TableCell>
+                    <TableCell sx={TableCellStyle}>Answer</TableCell>
+                    <TableCell sx={TableCellStyle}>Sub Category</TableCell>
+                    <TableCell sx={TableCellStyle}>Category</TableCell>
+                    <TableCell sx={TableCellStyle}>Delete</TableCell>
+                    <TableCell sx={TableCellStyle}>Update</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {categories.map((category) => (
-                    <TableRow key={category.id}>
-                      <TableCell>{category.id}</TableCell>
-                      <TableCell>{category.question}</TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        {category.answer}
+                  {qaData.map((el, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{i + 1}</TableCell>
+                      <TableCell>{el.questions}</TableCell>
+                      <TableCell>{el.answer}</TableCell>
+                      <TableCell>
+                        <Badge color="secondary" variant="dot">
+                          {el.subcategoryID.subCategoryname}
+                        </Badge>
                       </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        {category.subcat}
+                      <TableCell>
+                        <Badge color="secondary" variant="dot">
+                          {el.subcategoryID.categoryID.categoryName}
+                        </Badge>
                       </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        {category.cat}
-                      </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton aria-label="delete">
+                      <TableCell>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => deleteData(i)}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton aria-label="edit">
+                      <TableCell>
+                        <IconButton
+                          aria-label="edit"
+                          onClick={() => updateData(el)}
+                        >
                           <EditIcon />
                         </IconButton>
                       </TableCell>
@@ -220,3 +252,6 @@ const Qanswer = () => {
 };
 
 export default Qanswer;
+const TableCellStyle = {
+  color: "white",
+};

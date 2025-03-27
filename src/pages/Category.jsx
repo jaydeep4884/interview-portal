@@ -141,7 +141,7 @@ function Category() {
     }
   };
 
-  const searchingData = async () => {
+  const searchingData = async (e) => {
     await axios
       .get("https://interviewback-ucb4.onrender.com/category/?search=prog", {
         headers: {
