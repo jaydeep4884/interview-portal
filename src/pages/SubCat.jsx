@@ -55,7 +55,10 @@ function SubCat() {
           .then((res) => {
             console.log(res.data);
             setId(null);
-
+            setIni({
+              subCategoryname: "",
+              categoryID: "",
+            });
             toast.success("Data Updated !");
           });
       } catch (error) {

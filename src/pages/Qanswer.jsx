@@ -26,23 +26,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
 
-const categories = [
-  {
-    id: 1,
-    question: "What is React Jsx ?",
-    answer: "I don't Know !!",
-    subcat: "Hello",
-    cat: "Hello",
-  },
-  {
-    id: 2,
-    question: "Hello How Are you?",
-    answer: "I am Fine !!",
-    subcat: "",
-    cat: "",
-  },
-];
-
 const Qanswer = () => {
   const [open, setOpen] = useState(false);
   const [ini, setIni] = useState({
@@ -50,14 +33,62 @@ const Qanswer = () => {
     answer: "",
     subcategoryID: "",
   });
+  const [id, setId] = useState(null);
   const [qaData, setQaData] = useState([]);
   const Token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
 
   const handleSubmit = async (values, { resetForm }) => {
+    if (id !== null) {
+      try {
+        await axios
+          .patch(
+            `https://interviewback-ucb4.onrender.com/questions/${id}`,
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            setIni({
+              questions: "",
+              answer: "",
+              subcategoryID: "",
+            });
+            setId(null);
+            toast.success("Data Update SuccessFully !!");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await axios
+          .post(
+            "https://interviewback-ucb4.onrender.com/questions/create",
+            values,
+            {
+              headers: {
+                Authorization: Token,
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res.data);
+            toast.success("Question Add Successfully !!");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     console.log(values);
     handleClose();
     resetForm();
+    getQaData();
   };
 
   const getQaData = async () => {
@@ -85,16 +116,32 @@ const Qanswer = () => {
     setOpen(false);
   };
 
-  const deleteData = () => {
-    console.log("====================================");
-    console.log();
-    console.log("====================================");
+  const deleteData = async (id) => {
+    try {
+      await axios
+        .delete(`https://interviewback-ucb4.onrender.com/questions/${id}`, {
+          headers: {
+            Authorization: Token,
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          toast.success("Question Deleted !!");
+          getQaData();
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const updateData = () => {
-    console.log("====================================");
-    console.log();
-    console.log("====================================");
+  const updateData = async (el) => {
+    handleClickOpen();
+    setIni({
+      questions: el.questions,
+      answer: el.answer,
+      subcategoryID: el.subcategoryID.subCategoryname,
+    });
+    setId(el._id);
   };
 
   useEffect(() => {
@@ -169,9 +216,10 @@ const Qanswer = () => {
                       label="Sub-Category Name"
                       name="subcategoryID"
                     >
-                      {categories.map((option) => (
-                        <MenuItem key={option.id} value={option.subcat}>
-                          {option.subcat || "No Sub-Category"}
+                      {qaData.map((el, i) => (
+                        <MenuItem key={i} value={el.subcategoryID._id}>
+                          {el.subcategoryID.subCategoryname ||
+                            "No Sub-Category"}
                         </MenuItem>
                       ))}
                     </Field>
@@ -225,7 +273,7 @@ const Qanswer = () => {
                       <TableCell>
                         <IconButton
                           aria-label="delete"
-                          onClick={() => deleteData(i)}
+                          onClick={() => deleteData(el._id)}
                         >
                           <DeleteIcon />
                         </IconButton>
