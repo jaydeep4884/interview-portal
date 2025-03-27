@@ -160,6 +160,27 @@ function Category() {
       .catch((err) => console.log(err));
   };
 
+  const toggleStatus = async (el) => {
+    const newStatus = el.status === "on" ? "off" : "on";
+
+    try {
+      await axios.patch(
+        `https://interviewback-ucb4.onrender.com/category/${el._id}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: Token,
+          },
+        }
+      );
+      toast.success("Status Updated!");
+      FetchData();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update status.");
+    }
+  };
+
   useEffect(() => {
     FetchData();
   }, []);
@@ -279,8 +300,9 @@ function Category() {
                       <TableCell>{el.categoryName}</TableCell>
                       <TableCell sx={{ textAlign: "end" }}>
                         <Switch
-                          checked={el.status === "on" ? true : false}
+                          checked={el.status === "on"}
                           color="secondary"
+                          onChange={() => toggleStatus(el)}
                         />
                       </TableCell>
                       <TableCell sx={{ textAlign: "end" }}>

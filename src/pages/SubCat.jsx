@@ -138,6 +138,28 @@ function SubCat() {
     });
     setId(el._id);
   };
+
+  const toggleStatus = async (el) => {
+    const newStatus = el.status === "on" ? "off" : "on";
+
+    try {
+      await axios.patch(
+        `https://interviewback-ucb4.onrender.com/subcategory/${el._id}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: Token,
+          },
+        }
+      );
+      toast.success("Status Updated!");
+      getSubCategory();
+    } catch (error) {
+      console.error("Error updating status:", error);
+      toast.error("Failed to update status.");
+    }
+  };
+
   useEffect(() => {
     getSubCategory();
   }, []);
@@ -253,8 +275,9 @@ function SubCat() {
                         <TableCell>{el.categoryID.categoryName}</TableCell>
                         <TableCell sx={{ textAlign: "end" }}>
                           <Switch
-                            checked={el.status === "on" ? true : false}
+                            checked={el.status === "on"}
                             color="secondary"
+                            onChange={() => toggleStatus(el)}
                           />
                         </TableCell>
                         <TableCell sx={{ textAlign: "end" }}>
