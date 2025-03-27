@@ -2,7 +2,6 @@ import "./App.css";
 import Category from "./pages/Category";
 import Login from "./pages/Login";
 import Qanswer from "./pages/Qanswer";
-import SignUp from "./pages/SignUp";
 import SubCat from "./pages/SubCat";
 import Admin from "./pages/admin";
 import { Routes, Route } from "react-router";
@@ -21,8 +20,6 @@ function App() {
         </Route>
       </Routes>
       {/* <AdminPanel /> */}
-      {/* <SignUp /> */}
-      {/* <Login /> */}
     </>
   );
 }

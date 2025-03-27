@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { Form, Field, Formik } from "formik";
+import Loader from "../components/Loader";
 
 function Category() {
   const [ini, setIni] = useState({
@@ -35,6 +36,7 @@ function Category() {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState(-1);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   // const [searchData, setSearchData] = useState([]);
   const Token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
@@ -125,6 +127,7 @@ function Category() {
   };
 
   const FetchData = async () => {
+    setIsLoading(true);
     try {
       await axios
         .get("https://interviewback-ucb4.onrender.com/category/", {
@@ -134,6 +137,7 @@ function Category() {
         })
         .then((res) => {
           setData(res.data.data);
+          setIsLoading(false);
         })
         .catch((err) => console.log(err));
     } catch (error) {
@@ -293,37 +297,58 @@ function Category() {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {data.map((el, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{el.categoryName}</TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <Switch
-                          checked={el.status === "on"}
-                          color="secondary"
-                          onChange={() => toggleStatus(el)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => deleteData(el._id)}
+                {isLoading ? (
+                  <TableBody sx={{ position: "relative" }}>
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        sx={{ height: "200px", width: "100%" }}
+                      >
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "50%",
+                          }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => updateData(el)}
-                        >
-                          <EditIcon />
-                        </IconButton>
+                          <Loader />
+                        </Box>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    {data.map((el, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{el.categoryName}</TableCell>
+                        <TableCell sx={{ textAlign: "end" }}>
+                          <Switch
+                            checked={el.status === "on"}
+                            color="secondary"
+                            onChange={() => toggleStatus(el)}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ textAlign: "end" }}>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => deleteData(el._id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell sx={{ textAlign: "end" }}>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => updateData(el)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                )}
               </Table>
             </TableContainer>
           </Container>
