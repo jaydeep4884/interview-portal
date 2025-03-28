@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Box, Container, Grid } from "@mui/material";
 import axios from "axios";
 import TotalCategoryCount from "../components/TotalCategoryCount";
+import { token } from "../assets/contexts";
 
 function Admin() {
   const [categoryData, setCategoryData] = useState(0);
   const [subCategoryData, setSubCategoryData] = useState(0);
   const [questionData, setQuestionData] = useState(0);
-  const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
-
+  const Token = useContext(token);
   const fetchCategoryData = async () => {
     try {
       await axios
@@ -64,6 +63,7 @@ function Admin() {
     fetchCategoryData();
     fetchSubCategoryData();
     fetchQuestionData();
+ // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

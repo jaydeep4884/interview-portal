@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Box,
@@ -27,6 +27,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { Form, Field, Formik } from "formik";
 import Loader from "../components/Loader";
+import { token } from "../assets/contexts";
 
 function Category() {
   const [ini, setIni] = useState({
@@ -38,9 +39,7 @@ function Category() {
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   // const [searchData, setSearchData] = useState([]);
-  const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
-
+  const Token = useContext(token);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -187,6 +186,7 @@ function Category() {
 
   useEffect(() => {
     FetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

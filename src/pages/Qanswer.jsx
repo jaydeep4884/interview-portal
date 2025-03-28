@@ -17,7 +17,7 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,9 +25,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
+import Loader from "../components/Loader";
+import { token } from "../assets/contexts";
 
 const Qanswer = () => {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [ini, setIni] = useState({
     questions: "",
     answer: "",
@@ -35,8 +38,7 @@ const Qanswer = () => {
   });
   const [id, setId] = useState(null);
   const [qaData, setQaData] = useState([]);
-  const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
+  const Token = useContext(token)
 
   const handleSubmit = async (values, { resetForm }) => {
     if (id !== null) {
@@ -92,6 +94,7 @@ const Qanswer = () => {
   };
 
   const getQaData = async () => {
+    setIsLoading(true);
     try {
       await axios
         .get("https://interviewback-ucb4.onrender.com/questions/", {
@@ -102,6 +105,7 @@ const Qanswer = () => {
         .then((res) => {
           console.log(res.data.data);
           setQaData(res.data.data);
+          setIsLoading(false);
         });
     } catch (error) {
       console.log(error);
@@ -146,6 +150,7 @@ const Qanswer = () => {
 
   useEffect(() => {
     getQaData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
@@ -217,8 +222,8 @@ const Qanswer = () => {
                       name="subcategoryID"
                     >
                       {qaData.map((el, i) => (
-                        <MenuItem key={i} value={el.subcategoryID._id}>
-                          {el.subcategoryID.subCategoryname ||
+                        <MenuItem key={i} value={el.subcategoryID?._id || ""}>
+                          {el.subcategoryID?.subCategoryname ||
                             "No Sub-Category"}
                         </MenuItem>
                       ))}
@@ -254,41 +259,65 @@ const Qanswer = () => {
                     <TableCell sx={TableCellStyle}>Update</TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {qaData.map((el, i) => (
-                    <TableRow key={i}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell>{el.questions}</TableCell>
-                      <TableCell>{el.answer}</TableCell>
-                      <TableCell>
-                        <Badge color="secondary" variant="dot">
-                          {el.subcategoryID.subCategoryname}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge color="secondary" variant="dot">
-                          {el.subcategoryID.categoryID.categoryName}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => deleteData(el._id)}
+                {isLoading ? (
+                  <TableBody sx={{ position: "relative" }}>
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        sx={{ height: "200px", width: "100%" }}
+                      >
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "50%",
+                          }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() => updateData(el)}
-                        >
-                          <EditIcon />
-                        </IconButton>
+                          <Loader />
+                        </Box>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
+                  </TableBody>
+                ) : (
+                  <TableBody>
+                    {qaData.map((el, i) => (
+                      <TableRow key={i}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>{el.questions}</TableCell>
+                        <TableCell>{el.answer}</TableCell>
+                        <TableCell>
+                          <Badge color="secondary" variant="dot">
+                            {el.subcategoryID?.subCategoryname ||
+                              "No Sub-Category"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge color="secondary" variant="dot">
+                            {el.subcategoryID?.categoryID?.categoryName ||
+                              "No Category"}
+                          </Badge>
+                        </TableCell>
+
+                        <TableCell>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => deleteData(el._id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => updateData(el)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                )}
               </Table>
             </TableContainer>
           </Container>

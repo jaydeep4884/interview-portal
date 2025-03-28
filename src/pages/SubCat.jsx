@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import {
   Box,
@@ -26,19 +26,20 @@ import toast, { Toaster } from "react-hot-toast";
 import CloseIcon from "@mui/icons-material/Close";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
+import Loader from "../components/Loader";
+import { token } from "../assets/contexts";
 
 function SubCat() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [ini, setIni] = useState({
     subCategoryname: "",
     categoryID: "",
   });
   const [id, setId] = useState(null);
   const [subCatData, setSubCatData] = useState([]);
-  const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
-
+  const Token = useContext(token);
   const handleSubmit = async (values, { resetForm }) => {
     if (id !== null) {
       try {
@@ -100,6 +101,7 @@ function SubCat() {
   };
 
   const getSubCategory = async () => {
+    setIsLoading(true);
     try {
       await axios
         .get("https://interviewback-ucb4.onrender.com/subcategory/", {
@@ -110,6 +112,7 @@ function SubCat() {
         .then((res) => {
           console.log(res.data.data);
           setSubCatData(res.data.data);
+          setIsLoading(false);
         });
     } catch (error) {
       console.log(error);
@@ -165,6 +168,7 @@ function SubCat() {
 
   useEffect(() => {
     getSubCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -282,38 +286,59 @@ function SubCat() {
                       <TableCell sx={TabelCellStyle}>Update</TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody>
-                    {subCatData.map((el, i) => (
-                      <TableRow key={i}>
-                        <TableCell>{i + 1}</TableCell>
-                        <TableCell>{el.subCategoryname}</TableCell>
-                        <TableCell>{el.categoryID.categoryName}</TableCell>
-                        <TableCell sx={{ textAlign: "end" }}>
-                          <Switch
-                            checked={el.status === "on"}
-                            color="secondary"
-                            onChange={() => toggleStatus(el)}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ textAlign: "end" }}>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => deleteSubCatData(el._id)}
+                  {isLoading ? (
+                    <TableBody sx={{ position: "relative" }}>
+                      <TableRow>
+                        <TableCell
+                          colSpan={5}
+                          sx={{ height: "200px", width: "100%" }}
+                        >
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: "50%",
+                              right: "50%",
+                            }}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell sx={{ textAlign: "end" }}>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={() => updateSubCatData(el)}
-                          >
-                            <EditIcon />
-                          </IconButton>
+                            <Loader />
+                          </Box>
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
+                    </TableBody>
+                  ) : (
+                    <TableBody>
+                      {subCatData.map((el, i) => (
+                        <TableRow key={i}>
+                          <TableCell>{i + 1}</TableCell>
+                          <TableCell>{el.subCategoryname}</TableCell>
+                          <TableCell>{el.categoryID.categoryName}</TableCell>
+                          <TableCell sx={{ textAlign: "end" }}>
+                            <Switch
+                              checked={el.status === "on"}
+                              color="secondary"
+                              onChange={() => toggleStatus(el)}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ textAlign: "end" }}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => deleteSubCatData(el._id)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell sx={{ textAlign: "end" }}>
+                            <IconButton
+                              aria-label="delete"
+                              onClick={() => updateSubCatData(el)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  )}
                 </Table>
               </TableContainer>
             </Box>

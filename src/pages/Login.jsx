@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { token } from "../assets/contexts";
 
 function Login() {
   const navigate = useNavigate();
+  // eslint-disable-next-line
   const [ini, setIni] = useState({
     email: "",
     password: "",
   });
-  const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ODA4YTE3MzRkZGY2ZjZlZGUyNTRmMSIsImlhdCI6MTc0MjE4MzU3NX0.Xwtx7dNyxspgDzx_WCS5nhRr8D46VrS0mkSfd-4aXFE";
-
+  const Token = useContext(token);
   const handleSubmit = async (values, { resetForm }) => {
     try {
       await axios
@@ -24,7 +24,6 @@ function Login() {
         })
         .then((res) => {
           if (res.data.status === "success") {
-            console.log(res.data);
             navigate("/admin");
             toast.success("Login Successfully !!");
             // "wuxy@mailinator.com" USER_2
