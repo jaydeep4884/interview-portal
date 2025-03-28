@@ -11,6 +11,7 @@ function TotalCategoryCount({ Title, Count }) {
           borderRadius: "5px",
           textAlign: "center",
           backgroundColor: "#fff",
+          alignContent:"stretch"
         }}
       >
         <Typography variant="h5" sx={{ marginBottom: "20px", fontWeight: 700 }}>
