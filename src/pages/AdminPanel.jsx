@@ -1,74 +1,33 @@
 import * as React from "react";
-import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { createTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DescriptionIcon from "@mui/icons-material/Description";
-import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { useDemoRouter } from "@toolpad/core/internal";
-import Admin from "./admin";
-import Login from "./Login";
+import { PageContainer } from "@toolpad/core/PageContainer";
+import Grid from "@mui/material/Grid";
+import CategoryIcon from "@mui/icons-material/Category";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import Category from "./Category";
+// import Login from "./Login";
 import Qanswer from "./Qanswer";
 import SubCat from "./SubCat";
-import { Routes, Route } from "react-router";
+import Admin from "./admin";
+import { NavLink } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router";
 
 const NAVIGATION = [
-  {
-    kind: "header",
-    title: "Main items",
-  },
-  {
-    segment: "dashboard",
-    title: "Dashboard",
-    icon: <DashboardIcon />,
-  },
-  {
-    segment: "orders",
-    title: "Orders",
-    icon: <ShoppingCartIcon />,
-  },
-  {
-    kind: "divider",
-  },
-  {
-    kind: "header",
-    title: "Analytics",
-  },
-  {
-    segment: "reports",
-    title: "Reports",
-    icon: <BarChartIcon />,
-    children: [
-      {
-        segment: "sales",
-        title: "Sales",
-        icon: <DescriptionIcon />,
-      },
-      {
-        segment: "traffic",
-        title: "Traffic",
-        icon: <DescriptionIcon />,
-      },
-    ],
-  },
-  {
-    segment: "integrations",
-    title: "Integrations",
-    icon: <LayersIcon />,
-  },
+  { path: "/admin", title: "Dashboard", icon: <DashboardIcon /> },
+  { path: "/category", title: "Category", icon: <CategoryIcon /> },
+  { path: "/subcat", title: "Sub Category", icon: <AddCircleOutlineIcon /> },
+  { path: "/qa", title: "Q & A", icon: <HelpOutlineIcon /> },
 ];
 
 const demoTheme = createTheme({
-  cssVariables: {
-    colorSchemeSelector: "data-toolpad-color-scheme",
-  },
   colorSchemes: { light: true, dark: true },
+  cssVariables: {
+    colorSchemeSelector: "class",
+  },
   breakpoints: {
     values: {
       xs: 0,
@@ -80,65 +39,48 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname }) {
+function NavigationMenu() {
   return (
-    <Box
-      sx={{
-        padding: "20px",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      {/* DASHBOARD CONTENT  */}
-      <Typography>Dashboard content {pathname}</Typography>
-      {/* {<Admin />} */}
-    </Box>
+    <nav>
+      {NAVIGATION.map((item) => (
+        <NavLink
+          key={item.path}
+          to={item.path}
+          end // Ensures exact match
+          style={({ isActive }) => ({
+            textDecoration: "none",
+            margin: "10px",
+            display: "block",
+            color: isActive ? "blue" : "black", // Highlight active link
+          })}
+        >
+          {item.icon} {item.title}
+        </NavLink>
+      ))}
+    </nav>
   );
 }
 
-DemoPageContent.propTypes = {
-  pathname: PropTypes.string.isRequired,
-};
-
-function DashboardLayoutBasic(props) {
+export default function AdminPanel(props) {
   const { window } = props;
-
-  const router = useDemoRouter("/dashboard");
-
-  // Remove this const when copying and pasting into your project.
-  let demoWindow = window !== undefined ? window() : undefined;
+  const demoWindow = window ? window() : undefined;
 
   return (
-    // preview-start
-    <AppProvider
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      window={demoWindow}
-    >
+    <AppProvider navigation={NAVIGATION} theme={demoTheme} window={demoWindow}>
       <DashboardLayout>
+        <NavigationMenu />
         <Routes>
-          <Route path="/">
-            <Route index element={<Login />} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="category" element={<Category />} />
-            <Route path="subcat" element={<SubCat />} />
-            <Route path="qa" element={<Qanswer />} />
-          </Route>
+          <Route path="/" element={<Navigate to="/admin" replace />} />{" "}
+          {/* Redirect */}
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/category" element={<Category />} />
+          <Route path="/subcat" element={<SubCat />} />
+          <Route path="/qa" element={<Qanswer />} />
         </Routes>
-        {/* <DemoPageContent pathname={router.pathname} /> */}
+        <PageContainer>
+          <Grid container spacing={1}></Grid> {/* Empty Grid for layout */}
+        </PageContainer>
       </DashboardLayout>
     </AppProvider>
-    // preview-end
   );
 }
-
-DashboardLayoutBasic.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
-  window: PropTypes.func,
-};
-
-export default DashboardLayoutBasic;

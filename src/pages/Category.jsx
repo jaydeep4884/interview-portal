@@ -196,12 +196,12 @@ function Category() {
   return (
     <>
       <Box sx={{ position: "relative" }}>
-        <Navbar />
+        {/* <Navbar /> */}
         <Box
           sx={{
-            position: "absolute",
-            left: "15rem",
-            top: "5.5rem",
+            // position: "absolute",
+            // left: "15rem",
+            // top: "5.5rem",
             width: "calc(100% - 15rem)",
           }}
         >
