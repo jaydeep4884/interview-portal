@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Routes, Route, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Drawer,
   List,
@@ -21,12 +21,6 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import MenuIcon from "@mui/icons-material/Menu";
 import DoorBackIcon from "@mui/icons-material/DoorBack";
 
-import Category from "./Category";
-import Qanswer from "./Qanswer";
-import SubCat from "./SubCat";
-import Admin from "./admin";
-import Login from "./Login";
-
 const NAVIGATION = [
   { path: "/admin", title: "Dashboard", icon: <DashboardIcon /> },
   { path: "/category", title: "Category", icon: <CategoryIcon /> },
@@ -34,15 +28,14 @@ const NAVIGATION = [
   { path: "/qa", title: "Q & A", icon: <HelpOutlineIcon /> },
 ];
 
-// Create theme with palette for light/dark modes
 const demoTheme = createTheme({
   palette: {
     mode: "light", // or "dark"
   },
 });
 
-export default function AdminPanel(props) {
-  const [open, setOpen] = React.useState(true); // Sidebar open by default
+export default function Header({ children }) {
+  const [open, setOpen] = React.useState(true);
 
   // Toggle Sidebar when clicking collapse menu
   const toggleDrawer = () => setOpen(!open);
@@ -122,13 +115,7 @@ export default function AdminPanel(props) {
           padding: "20px 0",
         }}
       >
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/subcat" element={<SubCat />} />
-          <Route path="/qa" element={<Qanswer />} />
-        </Routes>
+        {children}
       </Box>
     </ThemeProvider>
   );
