@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import toast, { Toaster } from "react-hot-toast";
 import { token } from "../assets/contexts";
 
@@ -27,7 +27,7 @@ function SignUp() {
         })
         .then((res) => {
           console.log(res.data);
-          navigate("./admin.jsx");
+          navigate("/admin");
           toast.success("User Created Successfully !");
           // "wuxy@mailinator.com" USER_2
           // jygy@mailinator.com USER_3
@@ -138,6 +138,14 @@ function SignUp() {
                   </Field>
                 </Form>
               </Formik>
+              <Box sx={{ marginTop: "15px", textAlign: "center" }}>
+                <Typography>
+                  Already Have an Account ?{" "}
+                  <NavLink color="inherit" to={"/login"}>
+                    Login
+                  </NavLink>
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>

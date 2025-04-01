@@ -3,7 +3,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function Login() {
         .then((res) => {
           if (res.data.status === "success") {
             toast.success("Login Successfully!!");
-            navigate("/admin"); // Redirect to AdminPanel after successful login
+            navigate("/admin");
           }
         });
     } catch (error) {
@@ -75,6 +75,7 @@ function Login() {
                     variant="outlined"
                     label="Email"
                     sx={InputStyle}
+                    required
                   />
 
                   <Field
@@ -84,6 +85,7 @@ function Login() {
                     variant="outlined"
                     label="Password"
                     sx={InputStyle}
+                    required
                   />
 
                   <Field
@@ -97,6 +99,14 @@ function Login() {
                   </Field>
                 </Form>
               </Formik>
+              <Box sx={{ marginTop: "15px", textAlign: "center" }}>
+                <Typography>
+                  Don't Have an Account ?{" "}
+                  <NavLink color="inherit" to={"/signup"}>
+                    SignUp
+                  </NavLink>
+                </Typography>
+              </Box>
             </Box>
           </Box>
         </Box>

@@ -6,6 +6,7 @@ import Admin from "./pages/admin";
 import Category from "./pages/Category";
 import SubCat from "./pages/SubCat";
 import Qanswer from "./pages/Qanswer";
+import SignUp from "./pages/SignUp";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               </Header>
             }
           />
+          <Route path="/signup" element={<SignUp />}></Route>
           <Route
             path="subcat"
             element={
