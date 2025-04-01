@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Form, Field, Formik } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import toast, { Toaster } from "react-hot-toast";

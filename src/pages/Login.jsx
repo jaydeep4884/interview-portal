@@ -1,41 +1,34 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
-import { useNavigate } from "react-router";
-import { token } from "../assets/contexts";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  // eslint-disable-next-line
-  const [ini, setIni] = useState({
+  const [ini] = useState({
     email: "",
     password: "",
   });
-  const Token = useContext(token);
+
   const handleSubmit = async (values, { resetForm }) => {
     try {
       await axios
-        .post("https://interviewback-ucb4.onrender.com/admin/login", values, {
-          headers: {
-            Authorization: Token,
-          },
-        })
+        .post("https://interviewback-ucb4.onrender.com/admin/login", values)
         .then((res) => {
           if (res.data.status === "success") {
-            navigate("/admin");
-            toast.success("Login Successfully !!");
-            // "wuxy@mailinator.com" USER_2
-            // jygy@mailinator.com USER_3
+            toast.success("Login Successfully!!");
+            navigate("/admin"); // Redirect to AdminPanel after successful login
           }
         });
     } catch (error) {
-      toast.error("Invalid Email and Password !!");
+      toast.error("Invalid Email or Password!!");
       console.log(error);
     }
     resetForm();
   };
+
   return (
     <>
       <Container maxWidth="100%">

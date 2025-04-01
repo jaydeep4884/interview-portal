@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Breadcrumbs, Container, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import TotalCategoryCount from "../components/TotalCategoryCount";
 import { token } from "../assets/contexts";
@@ -41,25 +41,28 @@ function Admin() {
 
   return (
     <Box>
-      <Container maxWidth="lg">
+      <Container maxWidth>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: "15px" }}>
+          <Typography>Dashboard</Typography>
+        </Breadcrumbs>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
             <TotalCategoryCount
-              Title="Total Categories"
+              Title="Total Category"
               Count={categoryData}
               sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <TotalCategoryCount
-              Title="Total Sub-Categories"
+              Title="Total Sub Category"
               Count={subCategoryData}
               sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <TotalCategoryCount
-              Title="Total Questions / Answers"
+              Title="Total Q / A"
               Count={questionData}
               sx={{ padding: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}
             />

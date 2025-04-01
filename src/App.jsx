@@ -23,7 +23,7 @@ function App() {
       <Router>
         <AdminPanel />
       </Router>
-      {/* <AdminPanel /> */}
+      {/* <Login /> */}
     </>
   );
 }

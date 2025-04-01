@@ -25,6 +25,7 @@ import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { token } from "../assets/contexts";
+import Breadcrumb from "../components/Breadcrumb";
 
 const Qanswer = () => {
   const [open, setOpen] = useState(false);
@@ -119,7 +120,8 @@ const Qanswer = () => {
   return (
     <>
       <Box>
-        <Container maxWidth="lg">
+        <Container maxWidth>
+          <Breadcrumb name="Q / A" />
           <Box sx={{ textAlign: "end", marginBottom: "20px" }}>
             <Button variant="contained" onClick={() => setOpen(true)}>
               Add Q & A
@@ -217,7 +219,7 @@ const Qanswer = () => {
                 </TableBody>
               ) : (
                 qaData.map((el, i) => (
-                  <TableBody>
+                  <TableBody key={i}>
                     <TableRow key={i}>
                       <TableCell>{i + 1}</TableCell>
                       <TableCell>{el.questions}</TableCell>
