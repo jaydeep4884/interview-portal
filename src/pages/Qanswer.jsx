@@ -78,6 +78,8 @@ const Qanswer = () => {
         "https://interviewback-ucb4.onrender.com/questions/",
         { headers: { Authorization: Token } }
       );
+      console.log(response.data.data);
+
       setQaData(response.data.data);
     } catch (error) {
       console.log(error);
@@ -194,15 +196,28 @@ const Qanswer = () => {
                   <TableCell sx={TableCellStyle}>Update</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {isLoading ? (
+              {isLoading ? (
+                <TableBody sx={{ position: "relative" }}>
                   <TableRow>
-                    <TableCell colSpan={7} sx={{ height: "200px" }}>
-                      <Loader />
+                    <TableCell
+                      colSpan={5}
+                      sx={{ height: "200px", width: "100%" }}
+                    >
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          right: "50%",
+                        }}
+                      >
+                        <Loader />
+                      </Box>
                     </TableCell>
                   </TableRow>
-                ) : (
-                  qaData.map((el, i) => (
+                </TableBody>
+              ) : (
+                qaData.map((el, i) => (
+                  <TableBody>
                     <TableRow key={i}>
                       <TableCell>{i + 1}</TableCell>
                       <TableCell>{el.questions}</TableCell>
@@ -231,9 +246,9 @@ const Qanswer = () => {
                         </IconButton>
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
+                  </TableBody>
+                ))
+              )}
             </Table>
           </TableContainer>
         </Container>
