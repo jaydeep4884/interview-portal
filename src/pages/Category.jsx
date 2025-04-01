@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import {
   Box,
   Button,
@@ -27,7 +26,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { Form, Field, Formik } from "formik";
 import Loader from "../components/Loader";
-import { token } from "../assets/contexts";
+import { token, displayStyle } from "../assets/contexts";
 
 function Category() {
   const [ini, setIni] = useState({
@@ -40,6 +39,7 @@ function Category() {
   const [isLoading, setIsLoading] = useState(false);
   // const [searchData, setSearchData] = useState([]);
   const Token = useContext(token);
+  const display = useContext(displayStyle);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -195,26 +195,10 @@ function Category() {
   }, [search]);
   return (
     <>
-      <Box sx={{ position: "relative" }}>
-        {/* <Navbar /> */}
-        <Box
-          sx={{
-            // position: "absolute",
-            // left: "15rem",
-            // top: "5.5rem",
-            width: "calc(100% - 15rem)",
-          }}
-        >
+      <Box>
+        <Box>
           <Container maxWidth="lg">
-            <Box
-              sx={{
-                display: "flex",
-                width: "100%",
-                alignItems: "center",
-                columnGap: "16px",
-                marginBottom: "20px",
-              }}
-            >
+            <Box sx={display}>
               <TextField
                 select
                 fullWidth

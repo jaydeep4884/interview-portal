@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import {
   Box,
   Button,
@@ -27,7 +26,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import Loader from "../components/Loader";
-import { token } from "../assets/contexts";
+import { displayStyle, token } from "../assets/contexts";
 
 function SubCat() {
   const [open, setOpen] = useState(false);
@@ -40,6 +39,7 @@ function SubCat() {
   const [id, setId] = useState(null);
   const [subCatData, setSubCatData] = useState([]);
   const Token = useContext(token);
+  const display = useContext(displayStyle);
   const handleSubmit = async (values, { resetForm }) => {
     if (id !== null) {
       try {
@@ -173,26 +173,10 @@ function SubCat() {
 
   return (
     <>
-      <Box sx={{ position: "relative" }}>
-        <Navbar />
-        <Box
-          sx={{
-            position: "absolute",
-            left: "15rem",
-            top: "5.5rem",
-            width: "calc(100% - 15rem)",
-          }}
-        >
+      <Box>
+        <Box>
           <Container maxWidth="lg">
-            <Box
-              sx={{
-                display: "flex",
-                width: "100%",
-                alignItems: "center",
-                columnGap: "16px",
-                marginBottom: "20px",
-              }}
-            >
+            <Box sx={display}>
               <TextField
                 select
                 fullWidth
