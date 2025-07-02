@@ -18,7 +18,7 @@ function App() {
             path="admin"
             element={
               <Header>
-                <Admin />
+                <Admin /> 
               </Header>
             }
           />

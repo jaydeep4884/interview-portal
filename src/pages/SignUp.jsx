@@ -1,163 +1,129 @@
 import React, { useContext, useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { Form, Field, Formik } from "formik";
-import axios from "axios";
-import { NavLink, useNavigate } from "react-router";
+import { Formik, Form, Field } from "formik";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 import { token } from "../assets/contexts";
+import Loader from "../components/Loader";
 
-function SignUp() {
-  // eslint-disable-next-line
-  const [ini, setIni] = useState({
+const SignUp = () => {
+  const Token = useContext(token);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const initialValues = {
     firstname: "",
     lastname: "",
     contact: "",
     email: "",
     password: "",
-  });
-  const navigate = useNavigate();
-  const Token = useContext(token);
+  };
+
   const handleSubmit = async (values, { resetForm }) => {
+    setLoading(true);
     try {
-      await axios
-        .post("https://interviewback-ucb4.onrender.com/admin/signup", values, {
-          headers: {
-            Authorization: Token,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          navigate("/admin");
-          toast.success("User Created Successfully !");
-          // "wuxy@mailinator.com" USER_2
-          // jygy@mailinator.com USER_3
-        });
+      await axios.post(
+        "https://interviewback-ucb4.onrender.com/admin/signup",
+        values,
+        {
+          headers: { Authorization: Token },
+        }
+      );
+      toast.success("User Created Successfully!");
+      navigate("/admin");
+      resetForm();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Signup Failed!");
+    } finally {
+      setLoading(false);
     }
-    console.log(values);
-    resetForm();
   };
 
   return (
-    <>
-      <Container maxWidth="100%">
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-          }}
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
+      <Toaster />
+      {loading && <Loader />}
+
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 480,
+          p: 3,
+          borderRadius: 3,
+          boxShadow: 3,
+          bgcolor: "#fff",
+        }}
+      >
+        <Typography
+          variant="h4"
+          align="center"
+          sx={{ mb: 3, color: "blue", fontWeight: "bold" }}
         >
-          <Box
-            sx={{
-              padding: "25px",
-              border: "2px solid #1976d2",
-              boxShadow: "0 0 5px #1976d2",
-              borderRadius: "25px",
-              width: "28%",
-              overflow: "hidden",
+          Sign Up
+        </Typography>
+
+        <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+          <Form>
+            {[
+              { name: "firstname", label: "First Name" },
+              { name: "lastname", label: "Last Name" },
+              { name: "contact", label: "Contact Number" },
+              { name: "email", label: "Email", type: "email" },
+              { name: "password", label: "Password", type: "password" },
+            ].map(({ name, label, type = "text" }) => (
+              <Field
+                key={name}
+                as={TextField}
+                name={name}
+                label={label}
+                type={type}
+                fullWidth
+                required
+                variant="standard"
+                sx={{ mb: 2 }}
+              />
+            ))}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 1 }}
+              disabled={loading}
+            >
+              Submit
+            </Button>
+          </Form>
+        </Formik>
+
+        <Typography align="center" sx={{ mt: 2, fontSize: 14 }}>
+          Already have an account?{" "}
+          <Link
+            to="/"
+            style={{
+              color: "#1976d2",
+              textDecoration: "none",
+              fontWeight: 500,
             }}
           >
-            <Typography
-              variant="h1"
-              sx={{
-                fontSize: "34px",
-                color: "#1976D2",
-                fontWeight: "bold",
-                marginBottom: "20px",
-                textAlign: "center",
-              }}
-            >
-              Sign Up
-            </Typography>
-            <Box>
-              <Formik
-                enableReinitialize
-                initialValues={ini}
-                onSubmit={handleSubmit}
-              >
-                <Form>
-                  <Field
-                    as={TextField}
-                    name="firstname"
-                    variant="outlined"
-                    label="Enter Firstname"
-                    sx={InputStyle}
-                    required
-                  />
-
-                  <Field
-                    as={TextField}
-                    name="lastname"
-                    variant="outlined"
-                    label="Enter Lastname"
-                    sx={InputStyle}
-                    required
-                  />
-
-                  <Field
-                    as={TextField}
-                    name="contact"
-                    type="number"
-                    variant="outlined"
-                    label="Enter Contact Number"
-                    sx={InputStyle}
-                    required
-                  />
-
-                  <Field
-                    as={TextField}
-                    name="email"
-                    type="email"
-                    variant="outlined"
-                    label="Enter Email"
-                    sx={InputStyle}
-                    required
-                  />
-
-                  <Field
-                    as={TextField}
-                    name="password"
-                    type="password"
-                    variant="outlined"
-                    label="Enter Password"
-                    sx={InputStyle}
-                    required
-                  />
-
-                  <Field
-                    as={Button}
-                    fullWidth
-                    color="primary"
-                    type="submit"
-                    variant="contained"
-                  >
-                    Submit
-                  </Field>
-                </Form>
-              </Formik>
-              <Box sx={{ marginTop: "15px", textAlign: "center" }}>
-                <Typography>
-                  Already Have an Account ?{" "}
-                  <NavLink color="inherit" to={"/login"}>
-                    Login
-                  </NavLink>
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-        <Toaster />
-      </Container>
-    </>
+            Login
+          </Link>
+        </Typography>
+      </Box>
+    </Container>
   );
-}
+};
 
 export default SignUp;
-
-const InputStyle = {
-  width: "100%",
-  marginBottom: "20px",
-};

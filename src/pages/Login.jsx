@@ -3,11 +3,11 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Form, Field, Formik } from "formik";
 import axios from "axios";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const [ini] = useState({
+  const ini = useState({
     email: "",
     password: "",
   });
@@ -63,11 +63,7 @@ function Login() {
               Admin Panel
             </Typography>
             <Box>
-              <Formik
-                enableReinitialize
-                initialValues={ini}
-                onSubmit={handleSubmit}
-              >
+              <Formik initialValues={ini} onSubmit={handleSubmit}>
                 <Form>
                   <Field
                     as={TextField}
@@ -102,9 +98,9 @@ function Login() {
               <Box sx={{ marginTop: "15px", textAlign: "center" }}>
                 <Typography>
                   Don't Have an Account ?{" "}
-                  <NavLink color="inherit" to={"/signup"}>
+                  <Link color="inherit" to={'/signup'}>
                     SignUp
-                  </NavLink>
+                  </Link>
                 </Typography>
               </Box>
             </Box>
