@@ -26,7 +26,6 @@ import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { token, displayStyle } from "../assets/contexts";
-import Breadcrumb from "../components/Breadcrumb";
 
 function SubCat() {
   const [open, setOpen] = useState(false);
@@ -128,7 +127,6 @@ function SubCat() {
   return (
     <Box>
       <Container maxWidth>
-        <Breadcrumb name="Sub-Category" />
         <Box sx={display}>
           <TextField
             select

@@ -15,10 +15,10 @@ function App() {
         <Route path="/">
           <Route index element={<Login />} />
           <Route
-            path="admin"
+            path="Admin"
             element={
               <Header>
-                <Admin /> 
+                <Admin />
               </Header>
             }
           />
@@ -30,9 +30,9 @@ function App() {
               </Header>
             }
           />
-          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/Signup" element={<SignUp />}></Route>
           <Route
-            path="subcat"
+            path="Subcat"
             element={
               <Header>
                 <SubCat />
@@ -40,7 +40,7 @@ function App() {
             }
           />
           <Route
-            path="qa"
+            path="Q-A"
             element={
               <Header>
                 <Qanswer />

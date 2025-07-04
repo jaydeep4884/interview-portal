@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { token } from "../assets/contexts";
 import Loader from "../components/Loader";
+import Footer from "../components/Footer";
 
 const SignUp = () => {
   const Token = useContext(token);
@@ -26,30 +27,37 @@ const SignUp = () => {
       await axios.post(
         "https://interviewback-ucb4.onrender.com/admin/signup",
         values,
-        {
-          headers: { Authorization: Token },
-        }
+        { headers: { Authorization: Token } }
       );
       toast.success("User Created Successfully!");
       navigate("/admin");
       resetForm();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       toast.error("Signup Failed!");
     } finally {
       setLoading(false);
     }
   };
 
+  const fields = [
+    { name: "firstname", label: "First Name" },
+    { name: "lastname", label: "Last Name" },
+    { name: "contact", label: "Contact Number" },
+    { name: "email", label: "Email", type: "email" },
+    { name: "password", label: "Password", type: "password" },
+  ];
+
   return (
     <Container
       maxWidth="sm"
       sx={{
         minHeight: "100vh",
+        flexDirection: "column",
+        gap: 2,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        position: "relative",
       }}
     >
       <Toaster />
@@ -57,31 +65,24 @@ const SignUp = () => {
 
       <Box
         sx={{
-          width: "100%",
-          maxWidth: 480,
+          width: "90%",
+          maxWidth: 400,
           p: 3,
           borderRadius: 3,
           boxShadow: 3,
-          bgcolor: "#fff",
         }}
       >
         <Typography
           variant="h4"
           align="center"
-          sx={{ mb: 3, color: "blue", fontWeight: "bold" }}
+          sx={{ mb: 1, color: "#2F3C7E", fontWeight: "bold" }}
         >
           Sign Up
         </Typography>
 
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
           <Form>
-            {[
-              { name: "firstname", label: "First Name" },
-              { name: "lastname", label: "Last Name" },
-              { name: "contact", label: "Contact Number" },
-              { name: "email", label: "Email", type: "email" },
-              { name: "password", label: "Password", type: "password" },
-            ].map(({ name, label, type = "text" }) => (
+            {fields.map(({ name, label, type = "text" }) => (
               <Field
                 key={name}
                 as={TextField}
@@ -91,7 +92,7 @@ const SignUp = () => {
                 fullWidth
                 required
                 variant="standard"
-                sx={{ mb: 2 }}
+                sx={{ mb: 1 }}
               />
             ))}
 
@@ -99,8 +100,7 @@ const SignUp = () => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ mt: 1 }}
+              sx={{ mt: 1, fontWeight: 600, backgroundColor: "#2F3C7E" }}
               disabled={loading}
             >
               Submit
@@ -113,7 +113,6 @@ const SignUp = () => {
           <Link
             to="/"
             style={{
-              color: "#1976d2",
               textDecoration: "none",
               fontWeight: 500,
             }}
@@ -122,6 +121,7 @@ const SignUp = () => {
           </Link>
         </Typography>
       </Box>
+      <Footer />
     </Container>
   );
 };

@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,6 +14,9 @@ import {
   IconButton,
   MenuItem,
   TextField,
+  Grid,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,7 +27,6 @@ import { Form, Field, Formik } from "formik";
 import axios from "axios";
 import Loader from "../components/Loader";
 import { token } from "../assets/contexts";
-import Breadcrumb from "../components/Breadcrumb";
 
 const Qanswer = () => {
   const [open, setOpen] = useState(false);
@@ -38,6 +39,8 @@ const Qanswer = () => {
   const [id, setId] = useState(null);
   const [qaData, setQaData] = useState([]);
   const Token = useContext(token);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
@@ -120,16 +123,23 @@ const Qanswer = () => {
   return (
     <>
       <Box>
-        <Container maxWidth>
-          <Breadcrumb name="Q / A" />
+        <Grid container spacing={2}>
           <Box sx={{ textAlign: "end", marginBottom: "20px" }}>
             <Button variant="contained" onClick={() => setOpen(true)}>
               Add Q & A
             </Button>
           </Box>
 
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add Q & A</DialogTitle>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            fullScreen={isMobile} // ✅ Full screen dialog on mobile
+            fullWidth
+            maxWidth="sm"
+          >
+            <DialogTitle sx={{ fontSize: isMobile ? "18px" : "24px" }}>
+              Add Q & A
+            </DialogTitle>
             <IconButton
               aria-label="close"
               onClick={() => setOpen(false)}
@@ -183,77 +193,84 @@ const Qanswer = () => {
             </Formik>
           </Dialog>
 
-          <TableContainer
-            sx={{ border: "1px solid rgb(204, 204, 204)", borderRadius: "3px" }}
-          >
-            <Table>
-              <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
-                <TableRow>
-                  <TableCell sx={TableCellStyle}>No</TableCell>
-                  <TableCell sx={TableCellStyle}>Question</TableCell>
-                  <TableCell sx={TableCellStyle}>Answer</TableCell>
-                  <TableCell sx={TableCellStyle}>Sub Category</TableCell>
-                  <TableCell sx={TableCellStyle}>Category</TableCell>
-                  <TableCell sx={TableCellStyle}>Delete</TableCell>
-                  <TableCell sx={TableCellStyle}>Update</TableCell>
-                </TableRow>
-              </TableHead>
-              {isLoading ? (
-                <TableBody sx={{ position: "relative" }}>
+          <Box>
+            <TableContainer
+              sx={{
+                border: "1px solid rgb(204, 204, 204)",
+                borderRadius: "3px",
+                minWidth: "600px", // ✅ Ensures horizontal scroll
+              }}
+            >
+              <Table>
+                <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
                   <TableRow>
-                    <TableCell
-                      colSpan={5}
-                      sx={{ height: "200px", width: "100%" }}
-                    >
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          right: "50%",
-                        }}
-                      >
-                        <Loader />
-                      </Box>
-                    </TableCell>
+                    <TableCell sx={TableCellStyle}>No</TableCell>
+                    <TableCell sx={TableCellStyle}>Question</TableCell>
+                    <TableCell sx={TableCellStyle}>Answer</TableCell>
+                    <TableCell sx={TableCellStyle}>Sub Category</TableCell>
+                    <TableCell sx={TableCellStyle}>Category</TableCell>
+                    <TableCell sx={TableCellStyle}>Delete</TableCell>
+                    <TableCell sx={TableCellStyle}>Update</TableCell>
                   </TableRow>
-                </TableBody>
-              ) : (
-                qaData.map((el, i) => (
-                  <TableBody key={i}>
-                    <TableRow key={i}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell>{el.questions}</TableCell>
-                      <TableCell>{el.answer}</TableCell>
-                      <TableCell>
-                        {el.subcategoryID?.subCategoryname || "No Sub-Category"}
-                      </TableCell>
-                      <TableCell>
-                        {el.subcategoryID?.categoryID?.categoryName ||
-                          "No Category"}
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => deleteData(el._id)}
+                </TableHead>
+                {isLoading ? (
+                  <TableBody sx={{ position: "relative" }}>
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        sx={{ height: "200px", width: "100%" }}
+                      >
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "50%",
+                          }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() => updateData(el)}
-                        >
-                          <EditIcon />
-                        </IconButton>
+                          <Loader />
+                        </Box>
                       </TableCell>
                     </TableRow>
                   </TableBody>
-                ))
-              )}
-            </Table>
-          </TableContainer>
-        </Container>
+                ) : (
+                  qaData.map((el, i) => (
+                    <TableBody key={i}>
+                      <TableRow key={i}>
+                        <TableCell>{i + 1}</TableCell>
+                        <TableCell>{el.questions}</TableCell>
+                        <TableCell>{el.answer}</TableCell>
+                        <TableCell>
+                          {el.subcategoryID?.subCategoryname ||
+                            "No Sub-Category"}
+                        </TableCell>
+                        <TableCell>
+                          {el.subcategoryID?.categoryID?.categoryName ||
+                            "No Category"}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={() => deleteData(el._id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="edit"
+                            onClick={() => updateData(el)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  ))
+                )}
+              </Table>
+            </TableContainer>
+          </Box>
+        </Grid>
         <Toaster />
       </Box>
     </>

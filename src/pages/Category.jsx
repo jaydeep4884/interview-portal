@@ -27,7 +27,6 @@ import axios from "axios";
 import { Form, Field, Formik } from "formik";
 import Loader from "../components/Loader";
 import { token, displayStyle } from "../assets/contexts";
-import Breadcrumb from "../components/Breadcrumb";
 
 function Category() {
   const [formValues, setFormValues] = useState({ categoryName: "" });
@@ -128,7 +127,7 @@ function Category() {
   return (
     <Box>
       <Container maxWidth>
-        <Breadcrumb name="Category" path="/admin" />
+      
         <Box sx={display}>
           <TextField
             select
