@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -126,141 +125,137 @@ function Category() {
 
   return (
     <Box>
-      <Container maxWidth>
-      
-        <Box sx={display}>
-          <TextField
-            select
-            fullWidth
-            label="Search Category"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          >
-            {data.map((el) => (
-              <MenuItem key={el._id} value={el.categoryName}>
-                {el.categoryName}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <Button variant="contained" onClick={toggleDialog}>
-            Add Category
-          </Button>
-
-          <Dialog open={openDialog}>
-            <DialogTitle>Add Category</DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={toggleDialog}
-              sx={(theme) => ({
-                position: "absolute",
-                right: 8,
-                top: 8,
-                color: theme.palette.grey[500],
-              })}
-            >
-              <CloseIcon />
-            </IconButton>
-            <Formik
-              enableReinitialize
-              initialValues={formValues}
-              onSubmit={handleSubmit}
-            >
-              <Form>
-                <DialogContent dividers={Paper}>
-                  <Field
-                    as={TextField}
-                    name="categoryName"
-                    label="Category"
-                    fullWidth
-                    variant="outlined"
-                  />
-                  <DialogActions>
-                    <Field as={Button} type="submit" variant="contained">
-                      Submit
-                    </Field>
-                  </DialogActions>
-                </DialogContent>
-              </Form>
-            </Formik>
-          </Dialog>
-        </Box>
-
-        <TableContainer
-          sx={{
-            border: "1px solid rgb(204, 204, 204)",
-            borderRadius: "3px",
-            overflow: "hidden",
-          }}
+      <Box sx={display}>
+        <TextField
+          select
+          fullWidth
+          label="Search Category"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         >
-          <Table>
-            <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
+          {data.map((el) => (
+            <MenuItem key={el._id} value={el.categoryName}>
+              {el.categoryName}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#2F3C7E" }}
+          onClick={toggleDialog}
+        >
+          Add Category
+        </Button>
+
+        <Dialog open={openDialog}>
+          <DialogTitle>Add Category</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={toggleDialog}
+            sx={(theme) => ({
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: theme.palette.grey[500],
+            })}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Formik
+            enableReinitialize
+            initialValues={formValues}
+            onSubmit={handleSubmit}
+          >
+            <Form>
+              <DialogContent dividers={Paper}>
+                <Field
+                  as={TextField}
+                  name="categoryName"
+                  label="Category"
+                  fullWidth
+                  variant="outlined"
+                />
+                <DialogActions>
+                  <Field as={Button} type="submit" variant="contained">
+                    Submit
+                  </Field>
+                </DialogActions>
+              </DialogContent>
+            </Form>
+          </Formik>
+        </Dialog>
+      </Box>
+
+      <TableContainer
+        sx={{
+          border: "1px solid rgb(204, 204, 204)",
+          borderRadius: "3px",
+          overflow: "hidden",
+        }}
+      >
+        <Table>
+          <TableHead sx={{ backgroundColor: "#2F3C7E" }}>
+            <TableRow>
+              <TableCell sx={{ color: "white" }}>No</TableCell>
+              <TableCell sx={{ color: "white" }}>Category Name</TableCell>
+              <TableCell sx={{ color: "white", textAlign: "end" }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ color: "white", textAlign: "end" }}>
+                Delete
+              </TableCell>
+              <TableCell sx={{ color: "white", textAlign: "end" }}>
+                Update
+              </TableCell>
+            </TableRow>
+          </TableHead>
+
+          {isLoading ? (
+            <TableBody sx={{ position: "relative" }}>
               <TableRow>
-                <TableCell sx={{ color: "white" }}>No</TableCell>
-                <TableCell sx={{ color: "white" }}>Category Name</TableCell>
-                <TableCell sx={{ color: "white", textAlign: "end" }}>
-                  Status
-                </TableCell>
-                <TableCell sx={{ color: "white", textAlign: "end" }}>
-                  Delete
-                </TableCell>
-                <TableCell sx={{ color: "white", textAlign: "end" }}>
-                  Update
+                <TableCell colSpan={5} sx={{ height: "200px", width: "100%" }}>
+                  <Box sx={{ position: "absolute", top: "50%", right: "50%" }}>
+                    <Loader />
+                  </Box>
                 </TableCell>
               </TableRow>
-            </TableHead>
-
-            {isLoading ? (
-              <TableBody sx={{ position: "relative" }}>
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    sx={{ height: "200px", width: "100%" }}
-                  >
-                    <Box
-                      sx={{ position: "absolute", top: "50%", right: "50%" }}
+            </TableBody>
+          ) : (
+            <TableBody>
+              {data.map((el, index) => (
+                <TableRow key={el._id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{el.categoryName}</TableCell>
+                  <TableCell sx={{ textAlign: "end" }}>
+                    <Switch
+                      checked={el.status === "on"}
+                      color="secondary"
+                      onChange={() => toggleStatus(el)}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "end" }}>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => deleteData(el._id)}
                     >
-                      <Loader />
-                    </Box>
+                      <DeleteIcon color="#2F3C7E" />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "end" }}>
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => updateData(el)}
+                    >
+                      <EditIcon color="#000" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
-              </TableBody>
-            ) : (
-              <TableBody>
-                {data.map((el, index) => (
-                  <TableRow key={el._id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{el.categoryName}</TableCell>
-                    <TableCell sx={{ textAlign: "end" }}>
-                      <Switch
-                        checked={el.status === "on"}
-                        color="secondary"
-                        onChange={() => toggleStatus(el)}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ textAlign: "end" }}>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => deleteData(el._id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell sx={{ textAlign: "end" }}>
-                      <IconButton
-                        aria-label="edit"
-                        onClick={() => updateData(el)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-      </Container>
+              ))}
+            </TableBody>
+          )}
+        </Table>
+      </TableContainer>
       <Toaster />
     </Box>
   );

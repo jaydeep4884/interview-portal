@@ -23,7 +23,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 const drawerWidth = 240;
 
 const navItems = [
-  { text: "Dashboard", icon: <DashboardIcon />, path: "/Admin" },
+  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   { text: "Category", icon: <CategoryIcon />, path: "/Category" },
   { text: "Sub Category", icon: <AddCircleOutlineIcon />, path: "/Subcat" },
   { text: "Q & A", icon: <HelpOutlineIcon />, path: "/Q-A" },
@@ -46,15 +46,12 @@ export default function Header({ children }) {
   const drawer = (
     <div>
       <List style={{ paddingTop: "0", marginLeft: "0" }}>
-        <ListItem sx={{ backgroundColor: "#2F3C7E", padding: 2 }}>
-          <ListItemText
-            primary="Interview Portal"
-            sx={{
-              color: "white",
-              pl: 2,
-              fontWeight: "bold",
-            }}
-          />
+        <ListItem sx={{ backgroundColor: "#2F3C7E", padding: "14px" }}>
+          <ListItemText>
+            <Typography sx={{ color: "white", fontSize: "20px" }}>
+              Interview Panel
+            </Typography>
+          </ListItemText>
         </ListItem>
         {navItems.map((item) => (
           <ListItem
@@ -144,8 +141,7 @@ export default function Header({ children }) {
         component="main"
         sx={{
           flexGrow: 1,
-          bgcolor: "background.default",
-          p: 3,
+          padding: "16px",
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -39,6 +38,7 @@ function SubCat() {
   const [subCatData, setSubCatData] = useState([]);
   const Token = useContext(token);
   const display = useContext(displayStyle);
+  const [catData, setCatData] = useState([]);
 
   const handleSubmit = async (values, { resetForm }) => {
     try {
@@ -61,7 +61,13 @@ function SubCat() {
   };
 
   const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setIni({
+      subCategoryname: "",
+      categoryID: "",
+    });
+  };
 
   const getSubCategory = async () => {
     setIsLoading(true);
@@ -99,7 +105,7 @@ function SubCat() {
     handleClickOpen();
     setIni({
       subCategoryname: el.subCategoryname,
-      categoryID: el.categoryID.categoryName,
+      categoryID: el.categoryID?._id || "",
     });
     setId(el._id);
   };
@@ -119,161 +125,183 @@ function SubCat() {
     }
   };
 
+  const getCatCategory = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        "https://interviewback-ucb4.onrender.com/category/",
+        {
+          headers: { Authorization: Token },
+        }
+      );
+      setCatData(res.data.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getSubCategory();
+    getCatCategory();
     // eslint-disable-next-line
   }, []);
 
   return (
     <Box>
-      <Container maxWidth>
-        <Box sx={display}>
-          <TextField
-            select
-            fullWidth
-            label="Search Sub-Category"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          >
-            {subCatData.map((el, i) => (
-              <MenuItem key={i} value={el._id}>
-                {el.subCategoryname}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Button variant="contained" onClick={handleClickOpen}>
-            Add Sub Category
-          </Button>
+      <Box sx={display}>
+        <TextField
+          select
+          fullWidth
+          label="Search Sub-Category"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        >
+          {subCatData.map((el, i) => (
+            <MenuItem key={i} value={el._id}>
+              {el.subCategoryname}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button
+          variant="contained"
+          onClick={handleClickOpen}
+          sx={{ background: "#2F3C7E" }}
+        >
+          Sub Category
+        </Button>
 
-          <Dialog open={open}>
-            <DialogTitle>Add Sub Category</DialogTitle>
-            <IconButton
-              aria-label="close"
-              onClick={handleClose}
-              sx={{ position: "absolute", right: 8, top: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <Formik
-              enableReinitialize
-              initialValues={ini}
-              onSubmit={handleSubmit}
-            >
-              <Form>
-                <DialogContent dividers>
-                  <Field
-                    as={TextField}
-                    sx={{ marginBottom: "16px" }}
-                    name="subCategoryname"
-                    label="Sub Category"
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                  />
-                  <Field
-                    as={TextField}
-                    fullWidth
-                    name="categoryID"
-                    select
-                    label="Category Name"
-                  >
-                    {subCatData.map((el, i) => (
-                      <MenuItem key={i} value={el.categoryID._id}>
-                        {el.categoryID.categoryName}
-                      </MenuItem>
-                    ))}
+        <Dialog open={open}>
+          <DialogTitle>Add Sub Category</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Formik
+            enableReinitialize
+            initialValues={ini}
+            onSubmit={handleSubmit}
+          >
+            <Form>
+              <DialogContent dividers>
+                <Field
+                  as={TextField}
+                  sx={{ marginBottom: "16px" }}
+                  name="subCategoryname"
+                  label="Sub Category"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                />
+                <Field
+                  as={TextField}
+                  fullWidth
+                  name="categoryID"
+                  select
+                  label="Category Name"
+                >
+                  {catData.map((el) => (
+                    <MenuItem key={el._id} value={el._id}>
+                      {el.categoryName}
+                    </MenuItem>
+                  ))}
+                </Field>
+                <DialogActions>
+                  <Field as={Button} type="submit" variant="contained">
+                    Submit
                   </Field>
-                  <DialogActions>
-                    <Field as={Button} type="submit" variant="contained">
-                      Submit
-                    </Field>
-                  </DialogActions>
-                </DialogContent>
-              </Form>
-            </Formik>
-          </Dialog>
-        </Box>
+                </DialogActions>
+              </DialogContent>
+            </Form>
+          </Formik>
+        </Dialog>
+      </Box>
 
-        <Box>
-          <TableContainer
-            sx={{ border: "1px solid rgb(204, 204, 204)", borderRadius: "3px" }}
-          >
-            <Table aria-label="sub-category table">
-              <TableHead sx={{ backgroundColor: "rgb(25, 118, 210)" }}>
+      <Box sx={{ overflowX: "auto", width: "100%" }}>
+        <TableContainer
+          sx={{
+            border: "1px solid rgb(204, 204, 204)",
+            borderRadius: "3px",
+            minWidth: "700px",
+          }}
+        >
+          <Table aria-label="sub-category table">
+            <TableHead sx={{ backgroundColor: "#2F3C7E" }}>
+              <TableRow>
+                <TableCell sx={{ color: "white" }}>No</TableCell>
+                <TableCell sx={{ color: "white" }}>Sub-Category Name</TableCell>
+                <TableCell sx={{ color: "white" }}>Category Name</TableCell>
+                <TableCell sx={{ color: "white", textAlign: "end" }}>
+                  Status
+                </TableCell>
+                <TableCell sx={{ color: "white", textAlign: "end" }}>
+                  Delete
+                </TableCell>
+                <TableCell sx={{ color: "white", textAlign: "end" }}>
+                  Update
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            {isLoading ? (
+              <TableBody sx={{ position: "relative" }}>
                 <TableRow>
-                  <TableCell sx={{ color: "white" }}>No</TableCell>
-                  <TableCell sx={{ color: "white" }}>
-                    Sub-Category Name
-                  </TableCell>
-                  <TableCell sx={{ color: "white" }}>Category Name</TableCell>
-                  <TableCell sx={{ color: "white", textAlign: "end" }}>
-                    Status
-                  </TableCell>
-                  <TableCell sx={{ color: "white", textAlign: "end" }}>
-                    Delete
-                  </TableCell>
-                  <TableCell sx={{ color: "white", textAlign: "end" }}>
-                    Update
+                  <TableCell
+                    colSpan={5}
+                    sx={{ height: "200px", width: "100%" }}
+                  >
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "50%",
+                      }}
+                    >
+                      <Loader />
+                    </Box>
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              {isLoading ? (
-                <TableBody sx={{ position: "relative" }}>
-                  <TableRow>
-                    <TableCell
-                      colSpan={5}
-                      sx={{ height: "200px", width: "100%" }}
-                    >
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          right: "50%",
-                        }}
+              </TableBody>
+            ) : (
+              <TableBody>
+                {subCatData.map((el, i) => (
+                  <TableRow key={i}>
+                    <TableCell>{i + 1}</TableCell>
+                    <TableCell>{el.subCategoryname}</TableCell>
+                    <TableCell>{el.categoryID.categoryName}</TableCell>
+                    <TableCell sx={{ textAlign: "end" }}>
+                      <Switch
+                        checked={el.status === "on"}
+                        color="secondary"
+                        onChange={() => toggleStatus(el)}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "end" }}>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => deleteSubCatData(el._id)}
                       >
-                        <Loader />
-                      </Box>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "end" }}>
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => updateSubCatData(el)}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
-                </TableBody>
-              ) : (
-                <TableBody>
-                  {subCatData.map((el, i) => (
-                    <TableRow key={i}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell>{el.subCategoryname}</TableCell>
-                      <TableCell>{el.categoryID.categoryName}</TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <Switch
-                          checked={el.status === "on"}
-                          color="secondary"
-                          onChange={() => toggleStatus(el)}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton
-                          aria-label="delete"
-                          onClick={() => deleteSubCatData(el._id)}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ textAlign: "end" }}>
-                        <IconButton
-                          aria-label="edit"
-                          onClick={() => updateSubCatData(el)}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              )}
-            </Table>
-          </TableContainer>
-        </Box>
-      </Container>
+                ))}
+              </TableBody>
+            )}
+          </Table>
+        </TableContainer>
+      </Box>
       <Toaster />
     </Box>
   );

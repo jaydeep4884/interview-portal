@@ -2,7 +2,7 @@ import "./App.css";
 import Header from "./components/Header";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
-import Admin from "./pages/admin";
+import Dashboard from "./pages/Dashboard";
 import Category from "./pages/Category";
 import SubCat from "./pages/SubCat";
 import Qanswer from "./pages/Qanswer";
@@ -15,10 +15,10 @@ function App() {
         <Route path="/">
           <Route index element={<Login />} />
           <Route
-            path="Admin"
+            path="dashboard"
             element={
               <Header>
-                <Admin />
+                <Dashboard />
               </Header>
             }
           />

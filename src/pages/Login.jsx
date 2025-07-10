@@ -34,7 +34,7 @@ const Login = () => {
       );
       if (res.data.status === "success") {
         toast.success("Login Successfully!!");
-        navigate("/admin");
+        navigate("/dashboard");
       }
     } catch (err) {
       toast.error("Invalid Email or Password!!");
@@ -98,7 +98,7 @@ const Login = () => {
                 size="small"
                 placeholder="Enter your password"
                 variant="standard"
-                type={showPass ? "text" : "password"}
+                type={showPass ? "text" : "passw ord"}
                 sx={InputStyle}
                 InputProps={{
                   endAdornment: (

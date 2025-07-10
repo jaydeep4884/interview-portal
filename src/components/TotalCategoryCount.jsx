@@ -6,7 +6,7 @@ function TotalCategoryCount({ Title, Count }) {
     <Paper
       sx={{
         flex: "1 1 250px", // allows responsive resizing
-        maxWidth: 300,
+        maxWidth: "100%",
         minWidth: 250,
         padding: 2,
         borderRadius: 2,

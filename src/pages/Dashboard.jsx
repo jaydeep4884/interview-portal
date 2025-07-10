@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import axios from "axios";
 import TotalCategoryCount from "../components/TotalCategoryCount";
 import { token } from "../assets/contexts";
@@ -41,23 +41,21 @@ function Admin() {
 
   return (
     <Box>
-      <Container maxWidth>
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 3,
-            justifyContent: "center",
-          }}
-        >
-          <TotalCategoryCount Title="Total Category" Count={categoryData} />
-          <TotalCategoryCount
-            Title="Total Sub Category"
-            Count={subCategoryData}
-          />
-          <TotalCategoryCount Title="Total Q & A" Count={questionData} />
-        </Box>
-      </Container>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 3,
+          justifyContent: "center",
+        }}
+      >
+        <TotalCategoryCount Title="Total Category" Count={categoryData} />
+        <TotalCategoryCount
+          Title="Total Sub Category"
+          Count={subCategoryData}
+        />
+        <TotalCategoryCount Title="Total Q & A" Count={questionData} />
+      </Box>
     </Box>
   );
 }
